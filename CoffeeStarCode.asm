@@ -4,10 +4,12 @@
           MSG _______________________________________________________
           LDT Ingrese la cantidad de empleados en el grupo
           STA   E0A
-          LDT Ingrese el sueldo (es el mismo para todos) de un empleado
-          STA   E0C
+          MSG Ingrese el sueldo (es el mismo para todos) de un empleado
+          IN AX,1
+          STF E0C
           MSG El total a pagar por cada empleado es: (Mostrar resultado de los calculos)
           ;Debe saltar a la linea donde inician cal-culos por el momento 050
+          JMP 050
           LDT Desea ingresar otro grupo? 1:Si, defecto:No
           CMP   E01
           JEQ   003
@@ -25,48 +27,53 @@
           ;Se compara lo que se ingreso con los numeros respectivos
           CMP E01
           ;De no ser igual saltar a la siguiente comparacion y asi sucesivamente hasta encontrar la opcion correcta o halt
-          JNE 01C
+          JNE 01E
           MSG Mostrar el total de sueldo a pagar a los empleados
           LDF E0E
           OUT 1,AX
-          JEQ 00B
+          JEQ 00D
           CMP E02
-          JNE 022
+          JNE 024
           MSG Mostrar el total de aportes a salud empleados
           LDF E10
           OUT 1,AX
-          JEQ 00B
+          JEQ 00D
           CMP E03
-          JNE 028
+          JNE 02A
           MSG Mostrar el total de aportes a salud empleador
           LDF E12
           OUT 1,AX
-          JEQ 00B
+          JEQ 00D
           CMP E04
-          JNE 02E
+          JNE 030
           MSG Mostrar el total de aportes a pension empleados
           LDF E14
           OUT 1,AX
-          JEQ 00B
+          JEQ 00D
           CMP E05
-          JNE 034
+          JNE 036
           MSG Mostrar el total de aportes a pension empleador
           LDF E16
           OUT 1,AX
-          JEQ 00B
+          JEQ 00D
           CMP E06
-          JNE 03A
+          JNE 03C
           MSG Mostrar el total de aportes al FSP de los empleados
           LDF E18
           OUT 1,AX
-          JEQ 00B
+          JEQ 00D
           CMP E07
-          JNE 040
+          JNE 042
           MSG Mostrar el total de retencion en la fuente por la DIAN
           LDF E1A
           OUT 1,AX
-          JEQ 00B
+          JEQ 00D
           HLT
+          
+#050
+MSG Se Empiezan los calculos
+JMP 00A
+          
 #E00
           0000000000000000
           0000000000000001
