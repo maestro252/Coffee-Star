@@ -2,8 +2,9 @@
           MSG Bienvenido al programa de nomina de Coffee Star.
           MSG Desarrollado por Jonathan Eidelman y Jean Pierre Gomez.
           MSG _______________________________________________________
-          LDT Ingrese la cantidad de empleados en el grupo
-          STA   E0A
+          MSG Ingrese la cantidad de empleados en el grupo
+          IN AX,1
+          STF   E0A
           MSG Ingrese el sueldo (es el mismo para todos) de un empleado
           IN AX,1
           STF E0C
@@ -27,55 +28,143 @@
           ;Se compara lo que se ingreso con los numeros respectivos
           CMP E01
           ;De no ser igual saltar a la siguiente comparacion y asi sucesivamente hasta encontrar la opcion correcta o halt
-          JNE 01E
+          JNE 01F
           MSG Mostrar el total de sueldo a pagar a los empleados
           LDF E0E
           OUT 1,AX
-          JEQ 00D
+          JEQ 00E
           CMP E02
-          JNE 024
+          JNE 025
           MSG Mostrar el total de aportes a salud empleados
           LDF E10
           OUT 1,AX
-          JEQ 00D
+          JEQ 00E
           CMP E03
-          JNE 02A
+          JNE 02B
           MSG Mostrar el total de aportes a salud empleador
           LDF E12
           OUT 1,AX
-          JEQ 00D
+          JEQ 00E
           CMP E04
-          JNE 030
+          JNE 031
           MSG Mostrar el total de aportes a pension empleados
           LDF E14
           OUT 1,AX
-          JEQ 00D
+          JEQ 00E
           CMP E05
-          JNE 036
+          JNE 037
           MSG Mostrar el total de aportes a pension empleador
           LDF E16
           OUT 1,AX
-          JEQ 00D
+          JEQ 00E
           CMP E06
-          JNE 03C
+          JNE 03D
           MSG Mostrar el total de aportes al FSP de los empleados
           LDF E18
           OUT 1,AX
-          JEQ 00D
+          JEQ 00E
           CMP E07
-          JNE 042
+          JNE 043
           MSG Mostrar el total de retencion en la fuente por la DIAN
           LDF E1A
           OUT 1,AX
-          JEQ 00D
+          JEQ 00E
           HLT
           
 #050
 MSG Se Empiezan los calculos
-LDF E6A
+;Calcula aporte a salud empleado
+LDF E0C
+MULF E22
+STF E1E
+;Se suma el aporte a salud al total
+MULF E0A
+ADDF E10
+STF E10
 OUT 1,AX
-JMP 00A
-          
+;Calcula aporte a salud empresa
+LDF E0C
+MULF E24
+STF E20
+;Se suma el aporte a salud al total
+MULF E0A
+ADDF E12
+STF E12
+OUT 1,AX
+;Calcula aporte a pension empleado
+LDF E0C
+MULF E22
+STF E26
+;Se suma el aporte a pension al total
+MULF E0A
+ADDF E14
+STF E14
+OUT 1,AX
+;Calcula aporte a pension empresa
+LDF E0C
+MULF E2A
+STF E28
+;Se suma el aporte a pension al total
+MULF E0A
+ADDF E16
+STF E16
+OUT 1,AX
+;Calcula aporte al FSP
+LDF E0C
+DIVF E3A
+FTOI
+EAP
+CMP E04;if cantidadSalarios < 4
+JMA 077
+JEQ 077
+LDF E5C
+STF E2C
+JMP 09D
+CMP E6E;if cantidadSalarios < 16
+JMA 07E
+JEQ 07E
+LDF E0C
+MULF E2E
+STF E2C
+JMP 09D
+CMP E6F;if cantidadSalarios < 17
+JMA 085
+JEQ 085
+LDF E0C
+MULF E30
+STF E2C
+JMP 09D
+CMP E70;if cantidadSalarios < 18
+JMA 08C
+JEQ 08C
+LDF E0C
+MULF E32
+STF E2C
+JMP 09D
+CMP E71;if cantidadSalarios < 19
+JMA 093
+JEQ 093
+LDF E0C
+MULF E34
+STF E2C
+JMP 09D
+CMP E71;if cantidadSalarios < 20
+JMA 09A
+JEQ 09A
+LDF E0C
+MULF E36
+STF E2C
+JMP 09D
+;if cantidadSalarios > 20
+LDF E0C
+MULF E38
+STF E2C
+;Se suma el aporte al FSP
+MULF E0A
+ADDF E18
+STF E18
+JMP 00B
+
 #E00
           0000000000000000
           0000000000000001
@@ -215,3 +304,10 @@ JMP 00A
 ;7 - 32 BITS
 0100000011100000
 0000000000000000
+#E6E
+;16, 17, 18, 19, 20
+0000000000010000
+0000000000010001
+0000000000010010
+0000000000010011
+0000000000010100
