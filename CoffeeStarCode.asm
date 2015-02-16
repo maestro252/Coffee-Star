@@ -69,8 +69,8 @@
           LDF E1A
           OUT 1,AX
           JEQ 00E
-          LDF E5C
-          STF E0E
+          LDF E5C ;borrar los contenidos de memoria de los totales para ejecuciones posteriores
+          STF E0E ;se hace cargando el cero en los auxiliares y luego alamcenando ese 0 en las posiciones que se requieren reiniciar.
           STF E10
           STF E12
           STF E14
@@ -171,7 +171,7 @@ STF E2C
 MULF E0A
 ADDF E18
 STF E18
-;Calcula el ILV
+;Calcula el ILG
 LDF E0C
 SUBF E1E
 SUBF E26
