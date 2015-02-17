@@ -4,16 +4,16 @@
           MSG _______________________________________________________
           MSG Ingrese la cantidad de empleados en el grupo
           IN AX,1
-          STF   E0A
+          STF   E0A ;se almacena la cantidad de empleados en dicha posicion.
           MSG Ingrese el sueldo (es el mismo para todos) de un empleado
-          IN AX,1
+          IN AX,1   ;se almacena el sueldo de los empleados de ese grupo en dicha posicion.
           STF E0C
           MSG El total a pagar por cada empleado es: (Mostrar resultado de los calculos)
-          ;Debe saltar a la linea donde inician cal-culos por el momento 050
+          ;Debe saltar a la linea donde inician calculos por el momento 050
           JMP 050
           LDT Desea ingresar otro grupo? 1:Si, defecto:No
-          CMP   E01
-          JEQ   003
+          CMP   E01  ;compara el numero ingresado con 1
+          JEQ   003  ;en caso de que sea 1 salta al menu donde pregunta la cantidad de empleados y su salario.
           MSG _______________________________________________________
           MSG Menu de totales:
           MSG 1:Sueldo a pagar a los empleados
@@ -24,227 +24,227 @@
           MSG 6:Aportes al FSP de los empleados
           MSG 7:Pagar a la DIAN por la retencion en la fuente
           MSG Defecto:Terminar
-          LDT
+          LDT ;lee la opcion que el usuario desea realizar.
           ;Se compara lo que se ingreso con los numeros respectivos
-          CMP E01
+          CMP E01 ;compara con 1
           ;De no ser igual saltar a la siguiente comparacion y asi sucesivamente hasta encontrar la opcion correcta o halt
-          JNE 01F
+          JNE 01F ;si no es igual salta a la siguiente comparacion.
           MSG Mostrar el total de sueldo a pagar a los empleados
-          LDF E0E
+          LDF E0E ;trae la informacion preguntada por el usuario y la muestra.
           OUT 1,AX
-          JEQ 00E
-          CMP E02
-          JNE 025
+          JEQ 00E ;regresa al menu para ver que mas desea hacer el usuario.
+          CMP E02 ;compara con el 2.
+          JNE 025 ;de no ser igual salta a la siguiente comparacion.
           MSG Mostrar el total de aportes a salud empleados
-          LDF E10
+          LDF E10 ;carga la informacion preguntada por el usuario y la muestra.
           OUT 1,AX
-          JEQ 00E
-          CMP E03
+          JEQ 00E ;regresa al menu para ver que mas desea hacer el usuario.
+          CMP E03 ;compara con el 3, de no ser igual salta a la siguiente comparacion.
           JNE 02B
           MSG Mostrar el total de aportes a salud empleador
-          LDF E12
+          LDF E12 ;carga la informacion que el usuario desea ver y la muestra.
           OUT 1,AX
-          JEQ 00E
-          CMP E04
-          JNE 031
+          JEQ 00E ;salta al menu para ver que mas desea hacer el usuario.
+          CMP E04 ;compara con la opcion 4.
+          JNE 031 ;de no ser igual salta a la siguiente comparacion.
           MSG Mostrar el total de aportes a pension empleados
-          LDF E14
+          LDF E14 ;carga la informacion que el usuario desea ver y la muestra.
           OUT 1,AX
-          JEQ 00E
-          CMP E05
-          JNE 037
+          JEQ 00E ;salta al menu para ver que mas desea hacer el usuario.
+          CMP E05 ;compara con el 5.
+          JNE 037 ;de no ser igual pasa a la siguiente comparacion.
           MSG Mostrar el total de aportes a pension empleador
-          LDF E16
-          OUT 1,AX
-          JEQ 00E
-          CMP E06
-          JNE 03D
+          LDF E16 ;carga la informacion que el usuario desea ver.
+          OUT 1,AX ;muestra la informacion cargada.
+          JEQ 00E ;salta al menu para ver que mas desea hacer el usuario.
+          CMP E06 ;compara con la opcion 6.
+          JNE 03D ;de no ser igual salta a la siguiente opcion
           MSG Mostrar el total de aportes al FSP de los empleados
-          LDF E18
+          LDF E18 ;carga la informacion que el usuario desea ver y la muestra.
           OUT 1,AX
-          JEQ 00E
-          CMP E07
-          JNE 043 ;APUNTA A HLT
+          JEQ 00E ;salta al menu para ver que mas desea hacer el usuario.
+          CMP E07 ;compara con la opcion 7
+          JNE 043 ;APUNTA A HLT-----si la opcion ingresada no fue ni [1-7] entonces el usuario desea terminar y va al halt
           MSG Mostrar el total de retencion en la fuente por la DIAN
-          LDF E1A
+          LDF E1A ;carga la informacion que desea ver el usuario y la muestra.
           OUT 1,AX
-          JEQ 00E
-          LDF E5C ;borrar los contenidos de memoria de los totales para ejecuciones posteriores
-          STF E0E ;se hace cargando el cero en los auxiliares y luego alamcenando ese 0 en las posiciones que se requieren reiniciar.
-          STF E10
-          STF E12
-          STF E14
-          STF E16
-          STF E18
-          STF E1A
+          JEQ 00E ;salta al menu para ver si el usuario desea ver algo mas.
+          LDF E5C ;borrar los contenidos de memoria de los totales para ejecuciones posteriores --- carga el 0
+          STF E0E ;se almacena el 0 en esa variable que hay que reiniciar
+          STF E1  ;se almacena el 0 en esa variable que hay que reiniciar
+          STF E12 ;se almacena el 0 en esa variable que hay que reiniciar
+          STF E14 ;se almacena el 0 en esa variable que hay que reiniciar
+          STF E16 ;se almacena el 0 en esa variable que hay que reiniciar
+          STF E18 ;se almacena el 0 en esa variable que hay que reiniciar
+          STF E1A ;se almcaena el 0 en esa variable que hay que reiniciar
           HLT
           
-#050
+#050 ;apartir de aqui se hacen los calculos.
 MSG Se Empiezan los calculos
 ;Calcula aporte a salud empleado
-LDF E0C
-MULF E22
-STF E1E
+LDF E0C ;se carga el sueldo de la persona
+MULF E22;se multiplica por 4%
+STF E1E ;se almacena ese resultado en esa posicion de memoria.
 ;Se suma el aporte a salud al total
-MULF E0A
-ADDF E10
-STF E10
-OUT 1,AX
+MULF E0A ;multiplicamos el aporte a la salud por la cantidad de personas en el grupo
+ADDF E10 ;y lo sumamos con el total que se habia calculado hasta ahora de todos los otros grupos
+STF E10  ;almacenamos ese resultado en la posicion correspondiente al total de aportes a salud del empleado
+OUT 1,AX 
 ;Calcula aporte a salud empresa
-LDF E0C
-MULF E24
-STF E20
+LDF E0C ;se carga el sueldo de la persona
+MULF E24 ;se multiploca por 4.5%
+STF E20 ;se almacena en la variable correspondiente
 ;Se suma el aporte a salud al total
-MULF E0A
-ADDF E12
-STF E12
+MULF E0A ;multiplicamos por la cantidad de personas en el grupo
+ADDF E12 ;sumamos ese resultado a lo que habia antes en el total por este ambito
+STF E12  ;se actualiza el valor de la variable total
 OUT 1,AX
 ;Calcula aporte a pension empleado
-LDF E0C
-MULF E22
-STF E26
+LDF E0C ;carga el sueldo del empleado
+MULF E22 ;lo multiplica por 4%
+STF E26  ;lo almacena en la variable correspondiente
 ;Se suma el aporte a pension al total
-MULF E0A
-ADDF E14
-STF E14
+MULF E0A ;multiplicamos por la cantidad de empleados en ese grupo
+ADDF E14 ;lo sumamos al valor actual total de ese concepto
+STF E14 ;realmacenamos el valor actualizado.
 OUT 1,AX
 ;Calcula aporte a pension empresa
-LDF E0C
-MULF E2A
-STF E28
+LDF E0C ;se carga el sueldo de la persona
+MULF E2A ;se multiplica por 8%
+STF E28  ;se guarda en la variable correspondiente
 ;Se suma el aporte a pension al total
-MULF E0A
-ADDF E16
-STF E16
+MULF E0A ;multiplicamos por la cantidad de personas en el grupo
+ADDF E16 ;sumamos al valor total que se tenia hasta el momento
+STF E16  ;se actualiza el valor total
 OUT 1,AX
 ;Calcula aporte al FSP
-LDF E0C
-DIVF E3A
-FTOI
+LDF E0C ;se carga el sueldo del empleado
+DIVF E3A ;se divide por un minimo para saber cuandos SMLMV gana la persona
+FTOI ;se pasa el valor a entero para hacer las comparaciones.
 EAP
 CMP E04;if cantidadSalarios < 4
-JMA 077
+JMA 077 ;de ser mayor o igual a 4 salta a la siguiente comparacion
 JEQ 077
-LDF E5C
-STF E2C
-JMP 09D
+LDF E5C ;carga el valor correspondiente a pagar por el FSP
+STF E2C ;almacena la informacion en la variable 
+JMP 09D ;se salta a donde actualizara los totales del FSP
 CMP E6E;if cantidadSalarios < 16
-JMA 07E
+JMA 07E;de ser mayor o igual pasa a la siguiente comparacion
 JEQ 07E
-LDF E0C
-MULF E2E
-STF E2C
-JMP 09D
+LDF E0C ;carga el sueldo del empleado
+MULF E2E ;lo multiplica por el porcentaje correspondiente
+STF E2C ;almacena el resultado en memoria.
+JMP 09D ;salta a donde se actualizara los totales del FSP
 CMP E6F;if cantidadSalarios < 17
-JMA 085
+JMA 085;de ser mayor o igual salta a la siguiente comparacion
 JEQ 085
-LDF E0C
-MULF E30
-STF E2C
-JMP 09D
+LDF E0C ;carga el sueldo del empleado
+MULF E30 ;lo multiplica por el porcentaje correspondiente al rango
+STF E2C ;almacena el resultado en memoria
+JMP 09D ;salta a la parte en donde se actualizara los totales del FSP
 CMP E70;if cantidadSalarios < 18
-JMA 08C
+JMA 08C ;de ser mayor o igual va a la siguiente comparacion
 JEQ 08C
-LDF E0C
-MULF E32
-STF E2C
-JMP 09D
+LDF E0C ;carga el sueldo del empleado
+MULF E32 ;lo multiploca por el porcentaje correspondiente
+STF E2C ;almacena el resultado en memoria.
+JMP 09D ;salta a donde se actualiza el total del FSP
 CMP E71;if cantidadSalarios < 19
-JMA 093
+JMA 093 ;de ser mayor o igual salta a la siguiente comparacion
 JEQ 093
-LDF E0C
-MULF E34
-STF E2C
-JMP 09D
+LDF E0C ;carga el sueldo del empleado
+MULF E34;lo multiplica por el porcentaje correspondiente.
+STF E2C ;almacena el reusltado en meomria
+JMP 09D ;salta a donde se actualizara los totales del FSP
 CMP E71;if cantidadSalarios < 20
-JMA 09A
+JMA 09A ;de ser mayor o igual salta al ultimo intervalo
 JEQ 09A
-LDF E0C
-MULF E36
-STF E2C
-JMP 09D
+LDF E0C ;carga el sueldo del empleado
+MULF E36 ;lo multiplica por el porcentaje correspondiente.
+STF E2C ;almacena el resultado en memoria.
+JMP 09D ;salta a donde se actualizan los totales del FSP
 ;if cantidadSalarios > 20
-LDF E0C
-MULF E38
-STF E2C
+LDF E0C ;si no estuvo en ningun rango anterior - carga el sueldo del empleado
+MULF E38 ;lo multiplica por el porcentaje correspondiente
+STF E2C ;almacena el resultado
 ;Se suma el aporte al FSP
-MULF E0A
-ADDF E18
-STF E18
+MULF E0A ;multiploca el resultaod por la cantidad de empleados en el grupo
+ADDF E18 ;lo suma al total del FSP que se tenia
+STF E18 ;almacena el nuevo total para actualizar el dato
 ;Calcula el ILG
-LDF E0C
-SUBF E1E
-SUBF E26
-SUBF E2C
-STF E48
+LDF E0C ;carga el sueldo del emppleado
+SUBF E1E ;le resta el aporte a la salud del empleado
+SUBF E26 ;le resta el aporte a la pension del empleado
+SUBF E2C ;le resta el aporte al FSP del empleado
+STF E48 ;almcaena el resultado en memoria
 OUT 1,AX
 ;Calcula base gravable
-MULF E4A
-STF E4C
-LDF E48
-SUBF E4C
-STF E4C
+MULF E4A ;multiploca la ILG por 25%
+STF E4C ;lo almacena en memora
+LDF E48 ;lee el ILG
+SUBF E4C ;le resta el 25% del ILG para obtener la base gravable
+STF E4C ;almacena la base gravable
 OUT 1,AX
 ;Calcula la retencion en la fuente
-LDF E4C
-DIVF E46
-STF E76
-FTOI
+LDF E4C ;carga la base gravable
+DIVF E46 ;pasa la base gravable a UVT 
+STF E76 ;almacena el dato en memoria
+FTOI ;lo pasa a entero para hacer las comparaciones
 CMP E73;if UVTs <= 95
-JMA 0B6
-LDF E5C
-STF E4E
+JMA 0B6 ;si es mayor salta a la siguiente comparacion
+LDF E5C ;carga el 0
+STF E4E ;lo almacena en memoria
 OUT 1,AX
-JMP 0CF
+JMP 0CF ;salta a donde se actualiza el total de la retencion en la fuente.
 CMP E74;if UVTs <= 150
-JMA 0BF
-LDF E76
-SUBF E56
-MULF E50
-MULF E46
-STF E4E
+JMA 0BF ;de ser mayor salta a la siguiente comparacion
+LDF E76 ;carga la base gravable en UVT
+SUBF E56 ;resta 95 a a la Base gravable en UVT
+MULF E50 ;lo multiploca por 19%
+MULF E46 ;lo multiplica por el valor de la UVT para pasarlo a pesos
+STF E4E ;almacena el resultado
 OUT 1,AX
-JMP 0CF
+JMP 0CF ;salta a donde se actualiza el resultado de la retencion en la fuente.
 CMP E75;if UVTs <=360
-JMA 0C9
-LDF E76
-SUBF E58
-MULF E52
-ADDF E78
-MULF E46
-STF E4E
+JMA 0C9 ;de ser mayor salta a la siguiente comparacion
+LDF E76 ;carga la base gravable en uvt
+SUBF E58 ;le resta 150
+MULF E52 ;lo multiplica por 28%
+ADDF E78 ;le suma 10 ;;;;;; ojo aqui puede estar ERROR!!!
+MULF E46 ;lo multiplica por el valor de la UVT para pasarlo a pesos
+STF E4E ;almacena el dato en memoria
 OUT 1,AX
-JMP 0CF
-;if UVTs > 360
-LDF E76
-SUBF E5A
-MULF E54
-ADDF E7A
-MULF E46
-STF E4E
+JMP 0CF ;salta a donde actualiza los totales de la retencion en la fuente
+;if UVTs > 360 ;si ni estaba en ninguno de los anteriores intervalos entra aca
+LDF E76 ;carga la base gravable en UVT
+SUBF E5A ;le resta 350
+MULF E54 ;lo multiplica por 33%
+ADDF E7A ;le suma 69 ;;;;; OJO AQUI PUEDE ESTAR EL ERROR!!!
+MULF E46 ;lo multiplica por el valor de la UVT para pasarlo a pesos
+STF E4E ;almacena el dato
 ;Se suma a la retencion en la fuente DIAN
-MULF E0A
-ADDF E1A
-STF E1A
+MULF E0A ;multiplica por la cantidad de personas en el grupo
+ADDF E1A ;lo suma al total anterior para obtener el dato actualizado
+STF E1A ;almacena el dato actualizado
 ;Se muestra el salario de cada persona
-LDF E48
-DIVF E3A
-FTOI
+LDF E48 ;carga el ILG
+DIVF E3A ;lo divide por el salario minimo
+FTOI ; lo pasa a entero
 CMP E02;if cantidadSalarios <= 2
-JMA 0DB
-LDF E1C
-ADDF E48
-STF E6C
-JMP 0DF
-LDF E48
-SUBF E4E
-STF E6C
+JMA 0DB ;si es mayor que 2 no debe pagar el subisidio de transporte
+LDF E1C ;de serlo carga el subsidio de transporte
+ADDF E48 ;se lo suma al sueldo
+STF E6C ;almacena el dato
+JMP 0DF ;salta a donde imprime el dato
+LDF E48 ;AQUI LLEGA SI NO LO DEBE PAGAR carga el ILG
+SUBF E4E ;le resta la retencion en la fuente
+STF E6C ;almacena el dato
 OUT 1,AX
 ;Se suma al total a pagar de empleados
-MULF E0A
-ADDF E0E
-STF E0E
-JMP 00B
+MULF E0A ;multiplica por el numero de empleados
+ADDF E0E ;lo suma al total anterior
+STF E0E ;actualiza el dato ya calculado nuevamente
+JMP 00B ;regresa a una linea despues de donde fue llamado para hacer los calculos para continuar con el flujo del programa
 
 #E00
           0000000000000000
