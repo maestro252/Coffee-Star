@@ -71,7 +71,7 @@
           JEQ 00E ;salta al menu para ver si el usuario desea ver algo mas.
           LDF E5C ;borrar los contenidos de memoria de los totales para ejecuciones posteriores --- carga el 0
           STF E0E ;se almacena el 0 en esa variable que hay que reiniciar
-          STF E1  ;se almacena el 0 en esa variable que hay que reiniciar
+          STF E10  ;se almacena el 0 en esa variable que hay que reiniciar
           STF E12 ;se almacena el 0 en esa variable que hay que reiniciar
           STF E14 ;se almacena el 0 en esa variable que hay que reiniciar
           STF E16 ;se almacena el 0 en esa variable que hay que reiniciar
