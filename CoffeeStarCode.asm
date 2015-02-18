@@ -78,8 +78,8 @@
           STF E18 ;se almacena el 0 en esa variable que hay que reiniciar
           STF E1A ;se almcaena el 0 en esa variable que hay que reiniciar
           HLT
-          
-#050 ;apartir de aqui se hacen los calculos.
+
+#050 
 MSG Se Empiezan los calculos
 ;Calcula aporte a salud empleado
 LDF E0C ;se carga el sueldo de la persona
@@ -89,7 +89,7 @@ STF E1E ;se almacena ese resultado en esa posicion de memoria.
 MULF E0A ;multiplicamos el aporte a la salud por la cantidad de personas en el grupo
 ADDF E10 ;y lo sumamos con el total que se habia calculado hasta ahora de todos los otros grupos
 STF E10  ;almacenamos ese resultado en la posicion correspondiente al total de aportes a salud del empleado
-OUT 1,AX 
+OUT 1,AX
 ;Calcula aporte a salud empresa
 LDF E0C ;se carga el sueldo de la persona
 MULF E24 ;se multiploca por 4.5%
@@ -126,7 +126,7 @@ CMP E04;if cantidadSalarios < 4
 JMA 077 ;de ser mayor o igual a 4 salta a la siguiente comparacion
 JEQ 077
 LDF E5C ;carga el valor correspondiente a pagar por el FSP
-STF E2C ;almacena la informacion en la variable 
+STF E2C ;almacena la informacion en la variable
 JMP 09D ;se salta a donde actualizara los totales del FSP
 CMP E6E;if cantidadSalarios < 16
 JMA 07E;de ser mayor o igual pasa a la siguiente comparacion
@@ -187,7 +187,7 @@ STF E4C ;almacena la base gravable
 OUT 1,AX
 ;Calcula la retencion en la fuente
 LDF E4C ;carga la base gravable
-DIVF E46 ;pasa la base gravable a UVT 
+DIVF E46 ;pasa la base gravable a UVT
 STF E76 ;almacena el dato en memoria
 FTOI ;lo pasa a entero para hacer las comparaciones
 CMP E73;if UVTs <= 95
