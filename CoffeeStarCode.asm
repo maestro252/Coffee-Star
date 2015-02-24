@@ -8,7 +8,7 @@
           MSG Ingrese el sueldo (es el mismo para todos) de un empleado
           IN AX,1 ;Se almacena el sueldo de los empleados de ese grupo en dicha posicion.
           STF E0C
-          MSG El total a pagar por cada empleado es: (Mostrar resultado de los calculos)
+          MSG El total a pagar por cada empleado es:
           ;Debe saltar a la linea donde inician calculos por el momento 050
           JMP 050
           LDT Desea ingresar otro grupo? 1:Si, defecto:No
@@ -81,7 +81,7 @@
           
 #050
 ;Apartir de aqui se hacen los calculos.
-MSG Se Empiezan los calculos
+NOP
 ;Calcula aporte a salud empleado
 LDF E0C ;Se carga el sueldo de la persona
 MULF E22 ;Se multiplica por 4%
@@ -90,7 +90,7 @@ STF E1E ;Se almacena ese resultado en esa posicion de memoria.
 MULF E0A ;Multiplicamos el aporte a la salud por la cantidad de personas en el grupo
 ADDF E10 ;Y lo sumamos con el total que se habia calculado hasta ahora de todos los otros grupos
 STF E10 ;Almacenamos ese resultado en la posicion correspondiente al total de aportes a salud del empleado
-OUT 1,AX 
+NOP
 ;Calcula aporte a salud empresa
 LDF E0C ;Se carga el sueldo de la persona
 MULF E24 ;Se multiplica por 4.5%
@@ -99,7 +99,7 @@ STF E20 ;Se almacena en la variable correspondiente
 MULF E0A ;Multiplicamos por la cantidad de personas en el grupo
 ADDF E12 ;Sumamos ese resultado a lo que habia antes en el total por este ambito
 STF E12 ;Se actualiza el valor de la variable total
-OUT 1,AX
+NOP
 ;Calcula aporte a pension empleado
 LDF E0C ;Carga el sueldo del empleado
 MULF E22 ;Lo multiplica por 4%
@@ -108,7 +108,7 @@ STF E26 ;Lo almacena en la variable correspondiente
 MULF E0A ;Multiplicamos por la cantidad de empleados en ese grupo
 ADDF E14 ;Lo sumamos al valor actual total de ese concepto
 STF E14 ;Realmacenamos el valor actualizado.
-OUT 1,AX
+NOP
 ;Calcula aporte a pension empresa
 LDF E0C ;Se carga el sueldo de la persona
 MULF E2A ;Se multiplica por 8%
@@ -117,7 +117,7 @@ STF E28 ;Se guarda en la variable correspondiente
 MULF E0A ;Multiplicamos por la cantidad de personas en el grupo
 ADDF E16 ;Sumamos al valor total que se tenia hasta el momento
 STF E16 ;Se actualiza el valor total
-OUT 1,AX
+NOP
 ;Calcula aporte al FSP
 LDF E0C ;Se carga el sueldo del empleado
 DIVF E3A ;Se divide por un minimo para saber cuandos SMLMV gana la persona
@@ -179,14 +179,14 @@ SUBF E1E ;Le resta el aporte a la salud del empleado
 SUBF E26 ;Le resta el aporte a la pension del empleado
 SUBF E2C ;Le resta el aporte al FSP del empleado
 STF E48 ;Almacena el resultado en memoria
-OUT 1,AX
+NOP
 ;Calcula base gravable
 MULF E4A ;Multiploca la ILG por 25%
 STF E4C ;Lo almacena en memoria
 LDF E48 ;Lee el ILG
 SUBF E4C ;le resta el 25% del ILG para obtener la base gravable
 STF E4C ;Almacena la base gravable
-OUT 1,AX
+NOP
 ;Calcula la retencion en la fuente
 LDF E4C ;Carga la base gravable
 DIVF E46 ;Pasa la base gravable a UVT
@@ -202,7 +202,7 @@ CMP E00 ;Comparamos que el residuo sea 0
 JMA 0BD ;Saltamos a la siguiente comparacion si el residuo es mayor a 0
 LDF E5C ;Carga el 0
 STF E4E ;Lo almacena en memoria como la retencion en la fuente
-OUT 1,AX
+NOP
 JMP 0E0 ;Salta a donde se actualiza el total de la retencion en la fuente.
 LDA E7F ;Carga el resultado entero de la division
 CMP E74 ;If UVTs <= 150
@@ -216,7 +216,7 @@ SUBF E56 ;Resta 95 a a la Base gravable en UVT
 MULF E50 ;Lo multiploca por 19%
 MULF E46 ;Lo multiplica por el valor de la UVT para pasarlo a pesos
 STF E4E ;Almacena el resultado
-OUT 1,AX
+NOP
 JMP 0E0 ;Salta a donde se actualiza el resultado de la retencion en la fuente.
 LDA E7F ;Carga el resultado entero de la division
 CMP E75 ;If UVTs <=360
@@ -231,7 +231,7 @@ MULF E52 ;Lo multiplica por 28%
 ADDF E78 ;Le suma 10
 MULF E46 ;Lo multiplica por el valor de la UVT para pasarlo a pesos
 STF E4E ;Almacena el dato en memoria
-OUT 1,AX
+NOP
 JMP 0E0 ;Salta a donde actualiza los totales de la retencion en la fuente
 ;If UVTs > 360 ;Si no estaba en ninguno de los anteriores intervalos salta aca
 LDF E76 ;Carga la base gravable en UVT
