@@ -1,0 +1,6 @@
+9876543210;Jose Luis Montoya Pareja;1345250;
+98987123;Camilo Vargas;4543250;
+43789987;Lina Marulanda;7890000;
+9876543210;Jose Luis Montoya Pareja;1345250;
+98987123;Camilo Vargas;4543250;
+43789987;Lina Marulanda;7890000;
