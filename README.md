@@ -5,4 +5,5 @@ ____________________________
 
 Assembly instructions
 
-http://www.osdata.com/topic/language/asm/asmintro.htm
+- http://www.osdata.com/topic/language/asm/asmintro.htm
+- http://www.penguin.cz/~literakl/intel/intel.html
