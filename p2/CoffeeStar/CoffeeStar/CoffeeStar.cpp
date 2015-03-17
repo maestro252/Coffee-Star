@@ -10,6 +10,15 @@
 
 using namespace std;
 
+int numSalarios(int salario)
+{
+	__asm__
+	(
+		"MOV EAX, [salario];"
+	);
+	return salario;
+}
+
 int main()
 {
 	ifstream in("in.txt");
