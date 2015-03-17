@@ -7,3 +7,4 @@ Assembly instructions
 
 - http://www.osdata.com/topic/language/asm/asmintro.htm
 - http://www.penguin.cz/~literakl/intel/intel.html
+- http://en.wikipedia.org/wiki/X86_instruction_listings
