@@ -1,7 +1,7 @@
 // CoffeeStar.cpp : Defines the entry point for the console application.
 //
 
-//#include "stdafx.h"
+#include "stdafx.h"
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -12,10 +12,11 @@ using namespace std;
 
 int numSalarios(int salario)
 {
-	__asm__
-	(
-		"MOV EAX, [salario];"
-	);
+	__asm
+	{
+		MOV EAX, dword ptr [salario];
+		ADD EAX, dword ptr [salario];
+	};
 	return salario;
 }
 
@@ -58,6 +59,8 @@ int main()
 		cout << "Cedula: " << ids[i] << " Nombre: " << names[i] << " salario: ";
 		cout << salaries[i] << endl;
 	}
-
+	int number = numSalarios(5);
+	cout << number << endl;
+	cin >> number;
 	return 0;
 }
