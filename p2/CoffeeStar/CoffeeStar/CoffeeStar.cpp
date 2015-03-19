@@ -10,13 +10,15 @@
 
 using namespace std;
 
-int numSalarios(int salario)
+float numSalarios(float salario)
 {
-	__asm
-	{
-		MOV EAX, dword ptr [salario];
-		ADD EAX, dword ptr [salario];
-	};
+	float div = 2.5;
+	__asm {
+		MOVSS XMM0, dword ptr[salario];
+		ADDSS XMM0, dword ptr[salario];
+		DIVSS XMM0, dword ptr[div];
+		MOVSS dword ptr[salario], XMM0;
+	}
 	return salario;
 }
 
@@ -30,7 +32,6 @@ int main()
 	vector<long> salaries;
 	while(getline(in, line))
 	{
-		//cout << line << endl;
 			for(int i = 0; i < line.length() - 1; ++i){
 				if(line[i] == ';') {
 					ids.push_back(line.substr(0, i));
@@ -59,7 +60,15 @@ int main()
 		cout << "Cedula: " << ids[i] << " Nombre: " << names[i] << " salario: ";
 		cout << salaries[i] << endl;
 	}
-	int number = numSalarios(5);
+	ofstream out("out.txt");
+	if (out.is_open())
+	{
+		float number = roundf(3.141592 * 100) / 100;
+		out << number << endl;
+		out << "This is another line.\n";
+		out.close();
+	}
+	float number = numSalarios(5.5);
 	cout << number << endl;
 	cin >> number;
 	return 0;
