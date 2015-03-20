@@ -11,7 +11,6 @@
 using namespace std;
 
 float totalASEmpl, totalASEmpr, totalAPEmpl, totalAPEmpr, totalSueldo, totalFSP, totalRetFuente;
-float zero = 0;
 string output = "";
 
 float numSalarios(float salario)
@@ -19,23 +18,24 @@ float numSalarios(float salario)
 	float SLMVM = 644350.0;
 	float nSalarios;
 	__asm {
-		MOVSS XMM0, dword ptr[salario];
-		DIVSS XMM0, dword ptr[SLMVM];
-		MOVSS dword ptr[nSalarios], XMM0;
+		FLD dword ptr[salario];
+		FLD dword ptr[SLMVM];
+		FDIV;
+		FSTP dword ptr[nSalarios];
 	}
 	return nSalarios;
 }
 
 void initTotales() {
 	__asm {
-		MOVSS XMM0, dword ptr[zero];
-		MOVSS dword ptr[totalASEmpl], XMM0;
-		MOVSS dword ptr[totalASEmpr], XMM0;
-		MOVSS dword ptr[totalAPEmpl], XMM0;
-		MOVSS dword ptr[totalAPEmpr], XMM0;
-		MOVSS dword ptr[totalSueldo], XMM0;
-		MOVSS dword ptr[totalFSP], XMM0;
-		MOVSS dword ptr[totalRetFuente], XMM0;
+		FLDZ;
+		FST dword ptr[totalASEmpl];
+		FST dword ptr[totalASEmpr];
+		FST dword ptr[totalAPEmpl];
+		FST dword ptr[totalAPEmpr];
+		FST dword ptr[totalSueldo];
+		FST dword ptr[totalFSP];
+		FSTP dword ptr[totalRetFuente];
 	}
 }
 
@@ -44,12 +44,13 @@ float aporteSaludEmpl(float salario)
 	float ase = 0.04;
 	float res;
 	__asm {
-		MOVSS XMM0, dword ptr[salario];
-		MULSS XMM0, dword ptr[ase];
-		MOVSS dword ptr[res], XMM0;
-		MOVSS XMM0, dword ptr[totalASEmpl];
-		ADDSS XMM0, dword ptr[res];
-		MOVSS dword ptr[totalASEmpl], XMM0;
+		FLD dword ptr[salario];
+		FLD dword ptr[ase];
+		FMUL;
+		FST dword ptr[res];
+		FLD dword ptr[totalASEmpl];
+		FADD;
+		FSTP dword ptr[totalASEmpl];
 	}
 	return res;
 }
@@ -59,12 +60,13 @@ float aporteSaludEmpr(float salario)
 	float ase = 0.045;
 	float res;
 	__asm {
-		MOVSS XMM0, dword ptr[salario];
-		MULSS XMM0, dword ptr[ase];
-		MOVSS dword ptr[res], XMM0;
-		MOVSS XMM0, dword ptr[totalASEmpr];
-		ADDSS XMM0, dword ptr[res];
-		MOVSS dword ptr[totalASEmpr], XMM0;
+		FLD dword ptr[salario];
+		FLD dword ptr[ase];
+		FMUL;
+		FST dword ptr[res];
+		FLD dword ptr[totalASEmpr];
+		FADD;
+		FSTP dword ptr[totalASEmpr];
 	}
 	return res;
 }
@@ -74,12 +76,13 @@ float aportePensionEmpl(float salario)
 	float ase = 0.04;
 	float res;
 	__asm {
-		MOVSS XMM0, dword ptr[salario];
-		MULSS XMM0, dword ptr[ase];
-		MOVSS dword ptr[res], XMM0;
-		MOVSS XMM0, dword ptr[totalAPEmpl];
-		ADDSS XMM0, dword ptr[res];
-		MOVSS dword ptr[totalAPEmpl], XMM0;
+		FLD dword ptr[salario];
+		FLD dword ptr[ase];
+		FMUL;
+		FST dword ptr[res];
+		FLD dword ptr[totalAPEmpl];
+		FADD;
+		FSTP dword ptr[totalAPEmpl];
 	}
 	return res;
 }
@@ -89,12 +92,13 @@ float aportePensionEmpr(float salario)
 	float ase = 0.08;
 	float res;
 	__asm {
-		MOVSS XMM0, dword ptr[salario];
-		MULSS XMM0, dword ptr[ase];
-		MOVSS dword ptr[res], XMM0;
-		MOVSS XMM0, dword ptr[totalAPEmpr];
-		ADDSS XMM0, dword ptr[res];
-		MOVSS dword ptr[totalAPEmpr], XMM0;
+		FLD dword ptr[salario];
+		FLD dword ptr[ase];
+		FMUL;
+		FST dword ptr[res];
+		FLD dword ptr[totalAPEmpr];
+		FADD;
+		FSTP dword ptr[totalAPEmpr];
 	}
 	return res;
 }
@@ -103,23 +107,27 @@ float ILG(float salario, float ase, float ape, float fsp)
 {
 	float res;
 	__asm {
-		MOVSS XMM0, dword ptr[salario];
-		SUBSS XMM0, dword ptr[ase];
-		SUBSS XMM0, dword ptr[ape];
-		SUBSS XMM0, dword ptr[fsp];
-		MOVSS dword ptr[res], XMM0;
+		FLD dword ptr[salario];
+		FLD dword ptr[ase];
+		FSUB;
+		FLD dword ptr[ape];
+		FSUB;
+		FLD dword ptr[fsp];
+		FSUB;
+		FSTP dword ptr[res];
 	}
 	return res;
 }
 
 float BaseG (float ILG)
 {
-	float div = 0.25;
+	float div = 0.75;
 	float res;
 	__asm {
-		MOVSS XMM0, dword ptr[ILG];
-		MULSS XMM0, dword ptr[div];
-		MOVSS dword ptr[res], XMM0;
+		FLD dword ptr[ILG];
+		FLD dword ptr[div];
+		FMUL;
+		FSTP dword ptr[res];
 	}
 	return res;
 }
@@ -129,9 +137,10 @@ float BaseGUVT(float baseG)
 	float UVT = 28279.0;
 	float res;
 	__asm {
-		MOVSS XMM0, dword ptr[baseG];
-		DIVSS XMM0, dword ptr[UVT];
-		MOVSS dword ptr[res], XMM0;
+		FLD dword ptr[baseG];
+		FLD dword ptr[UVT];
+		FDIV;
+		FSTP dword ptr[res];
 	}
 	return res;
 }
@@ -200,13 +209,21 @@ int main()
 			out << aper << ";";
 			//Aporte FSP
 			//ILG
+			float ilg = ILG(salaries[i],ase,ape, 0.0);
+			ilg = roundf(ilg * 100) / 100;
+			out << ilg << ";";
 			//Base Gravable
+			float bg = BaseG(ilg);
+			bg = roundf(bg * 100) / 100;
+			out << bg << ";";
 			//Base Gravable en UVTs
+			float bgUVT = BaseGUVT(bg);
+			bgUVT = roundf(bgUVT * 100) / 100;
+			out << bgUVT << ";";
 			//Tarifa de retencion
 			//Retencion en la fuente
 			//Subsidio de transporte
 			//Total a pagar a empleado
-			
 			out << endl;
 		}
 		//double salario = salaries[0] * 0.5;
@@ -222,7 +239,7 @@ int main()
 	cout << "Total Retencion en la fuente: " << totalRetFuente << endl;
 	cout << "Total sueldos a pagar: " << totalSueldo << endl;
 	//float number = numSalarios(5.5);
-	///cout << number << endl;
+	//cout << numSalarios(1288700.0) << endl;
 	//float salario = salaries[0]*0.5f;
 	//cout << salario*2 << endl;
 	return 0;
