@@ -9,3 +9,9 @@ Assembly instructions
 - http://www.penguin.cz/~literakl/intel/intel.html
 - http://en.wikipedia.org/wiki/X86_instruction_listings
 - https://docs.oracle.com/cd/E26502_01/html/E28388/eojde.html
+
+_____________________________
+
+Managing jumps with floating point numbers
+
+- http://stackoverflow.com/questions/7057501/x86-assembler-floating-point-compare
