@@ -12,6 +12,23 @@ using namespace std;
 
 float totalASEmpl, totalASEmpr, totalAPEmpl, totalAPEmpr, totalSueldo, totalFSP, totalRetFuente, sueldoAPagar;
 
+string formato(float num){
+	num *= 100;
+  int number = (num + 0.5);
+  cout << "number: " << number << endl;
+  int c1, c2;
+  c1 = (number % 100) / 10;
+  c2 = number % 10;
+  cout << "c1: " << c1 << " c2: " << c2 << endl;
+	if (c1 == 0 && c2 == 0){
+		number /= 100;
+    return to_string(number) + ".00";
+	}else{
+    number /= 100;
+		return to_string(number) + "." +  to_string(c1) + to_string(c2);
+	}
+}
+
 float numSalarios(float salario)
 {
 	float SLMVM = 644350.0;
@@ -454,50 +471,50 @@ int main()
 			//Sueldo empleado en SLMVM
 			float nSalarios = numSalarios(salaries[i]);
 			nSalarios = roundf(nSalarios * 100) / 100;
-			out << nSalarios << ";";
+			out << formato(nSalarios) << ";";
 			//Aporte a salud empleado
 			float ase = aporteSaludEmpl(salaries[i]);
 			//ase = roundf(ase * 100) / 100;
-			out << ase << ";";
+			out << formato(ase) << ";";
 			//Aporte a salud empleador
 			float aser = aporteSaludEmpr(salaries[i]);
 			//aser = roundf(aser * 100) / 100;
-			out << aser << ";";
+			out << formato(aser) << ";";
 			//Aporte a pension empleado
 			float ape = aportePensionEmpl(salaries[i]);
 			//ape = roundf(ape * 100) / 100;
-			out << ape << ";";
+			out << formato(ape) << ";";
 			//Aporte a pension empleador
 			float aper = aportePensionEmpr(salaries[i]);
 			//aper = roundf(aper * 100) / 100;
-			out << aper << ";";
+			out << formato(aper) << ";";
 			//Aporte FSP
 			float fsp = FSP(salaries[i]);
 			//fsp = roundf(fsp * 100) / 100;
-			out << fsp << ";";
+			out << formato(fsp) << ";";
 			//ILG
 			float ilg = ILG(salaries[i],ase,ape, fsp);
 			//ilg = roundf(ilg * 100) / 100;
-			out << ilg << ";";
+			out << formato(ilg) << ";";
 			//Base Gravable
 			float bg = BaseG(ilg);
-			out << bg << ";";
+			out << formato(bg) << ";";
 			//Base Gravable en UVTs
 			float bgUVT = BaseGUVT(bg);
-			out << bgUVT << ";";
+			out << formato(bgUVT) << ";";
 			//Tarifa de retencion
 			float tarifaRetencion = tarifaRet(bgUVT);
-			out << tarifaRetencion << ";";
+			out << formato(tarifaRetencion) << ";";
 			//Retencion en la fuente
 			float ret = RetFuente(bgUVT, tarifaRetencion);
-			out << ret << ";";
+			out << formato(ret) << ";";
 			//Subsidio de transporte
 			float subTrans = SubsidioTrans(salaries[i]);
 			//subTrans = roundf(subTrans * 100) / 100;
-			out << subTrans << ";";
+			out << formato(subTrans) << ";";
 			//Total a pagar a empleado
 			float sueldo = SueldoPagar(ilg, ret, subTrans);
-			out << sueldo << ";";
+			out << formato(sueldo) << ";";
 			out << endl;
 		}
 		out.close();
