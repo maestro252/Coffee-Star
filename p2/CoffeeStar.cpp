@@ -10,22 +10,33 @@
 
 using namespace std;
 
-float totalASEmpl, totalASEmpr, totalAPEmpl, totalAPEmpr, totalSueldo, totalFSP, totalRetFuente, sueldoAPagar;
+float totalASEmpl, totalASEmpr, totalAPEmpl, totalAPEmpr, totalSueldo, totalFSP, totalRetFuente;
 
 string formato(float num){
 	num *= 100;
   int number = (num + 0.5);
-  cout << "number: " << number << endl;
   int c1, c2;
   c1 = (number % 100) / 10;
   c2 = number % 10;
-  cout << "c1: " << c1 << " c2: " << c2 << endl;
 	if (c1 == 0 && c2 == 0){
 		number /= 100;
     return to_string(number) + ".00";
 	}else{
     number /= 100;
 		return to_string(number) + "." +  to_string(c1) + to_string(c2);
+	}
+}
+
+void initTotales() {
+	__asm {
+		FLDZ;
+		FST dword ptr[totalASEmpl];
+		FST dword ptr[totalASEmpr];
+		FST dword ptr[totalAPEmpl];
+		FST dword ptr[totalAPEmpr];
+		FST dword ptr[totalSueldo];
+		FST dword ptr[totalFSP];
+		FSTP dword ptr[totalRetFuente];
 	}
 }
 
@@ -40,20 +51,6 @@ float numSalarios(float salario)
 		FSTP dword ptr[nSalarios];
 	}
 	return nSalarios;
-}
-
-void initTotales() {
-	__asm {
-		FLDZ;
-		FST dword ptr[sueldoAPagar];
-		FST dword ptr[totalASEmpl];
-		FST dword ptr[totalASEmpr];
-		FST dword ptr[totalAPEmpl];
-		FST dword ptr[totalAPEmpr];
-		FST dword ptr[totalSueldo];
-		FST dword ptr[totalFSP];
-		FSTP dword ptr[totalRetFuente];
-	}
 }
 
 float aporteSaludEmpl(float salario)
@@ -131,7 +128,6 @@ float ILG(float salario, float ase, float ape, float fsp)
 		FSUB;
 		FLD dword ptr[fsp];
 		FSUB;
-		FST dword ptr[sueldoAPagar];
 		FSTP dword ptr[res];
 	}
 	return res;
@@ -310,17 +306,13 @@ float SubsidioTrans(float salario)
 		JAE pagasub;
 		FSTP dword ptr[garbage];
 		FLDZ;
-		FST dword ptr[res];
-		JMP adicionar;
+		JMP retornar;
 	pagasub:
 		FSTP dword ptr[garbage];
 		FLD dword ptr[subTrans];
-		FST dword ptr[res];
-		JMP adicionar;
-	adicionar:
-		FLD dword ptr[sueldoAPagar];
-		FADD;
-		FSTP dword ptr[sueldoAPagar];
+		JMP retornar;
+	retornar:
+		FSTP dword ptr[res];
 	}
 	return res;
 }
@@ -423,14 +415,15 @@ float SueldoPagar(float ilg, float retFuente, float subTrans)
 	return res;
 }
 
+
 int main()
 {
 	initTotales();
 	ifstream in("in.txt");
 	string line;
-	stringstream ss;
 	vector<string> names;
 	vector<string> ids;
+	vector<string> salary;
 	vector<float> salaries;
 	while(getline(in, line))
 	{
@@ -442,7 +435,6 @@ int main()
 				}
 			}
 
-
 			for(int j = 0; j < line.length() - 1; ++j)
 			{
 				if(line[j] == ';'){
@@ -452,6 +444,7 @@ int main()
 				}
 			}
 			string salaryS = line.substr(0, line.length()-1);
+			salary.push_back(salaryS);
 			stringstream s(salaryS);
 			long salary;
 			s >> salary;
@@ -467,34 +460,27 @@ int main()
 			//Nombre
 			out << names[i] << ";";
 			//Salario base
-			out << salaries[i] << ";";
+			out << salary[i] << ";";
 			//Sueldo empleado en SLMVM
 			float nSalarios = numSalarios(salaries[i]);
-			nSalarios = roundf(nSalarios * 100) / 100;
 			out << formato(nSalarios) << ";";
 			//Aporte a salud empleado
 			float ase = aporteSaludEmpl(salaries[i]);
-			//ase = roundf(ase * 100) / 100;
 			out << formato(ase) << ";";
 			//Aporte a salud empleador
 			float aser = aporteSaludEmpr(salaries[i]);
-			//aser = roundf(aser * 100) / 100;
 			out << formato(aser) << ";";
 			//Aporte a pension empleado
 			float ape = aportePensionEmpl(salaries[i]);
-			//ape = roundf(ape * 100) / 100;
 			out << formato(ape) << ";";
 			//Aporte a pension empleador
 			float aper = aportePensionEmpr(salaries[i]);
-			//aper = roundf(aper * 100) / 100;
 			out << formato(aper) << ";";
 			//Aporte FSP
 			float fsp = FSP(salaries[i]);
-			//fsp = roundf(fsp * 100) / 100;
 			out << formato(fsp) << ";";
 			//ILG
 			float ilg = ILG(salaries[i],ase,ape, fsp);
-			//ilg = roundf(ilg * 100) / 100;
 			out << formato(ilg) << ";";
 			//Base Gravable
 			float bg = BaseG(ilg);
@@ -510,7 +496,6 @@ int main()
 			out << formato(ret) << ";";
 			//Subsidio de transporte
 			float subTrans = SubsidioTrans(salaries[i]);
-			//subTrans = roundf(subTrans * 100) / 100;
 			out << formato(subTrans) << ";";
 			//Total a pagar a empleado
 			float sueldo = SueldoPagar(ilg, ret, subTrans);
@@ -519,12 +504,12 @@ int main()
 		}
 		out.close();
 	}
-	cout << "Total Aporte a Salud Empleados: " << totalASEmpl << endl;
-	cout << "Total Aporte a Salud Empleador: " << totalASEmpr << endl;
-	cout << "Total Aporte a Pension Empleados: " << totalAPEmpl << endl;
-	cout << "Total Aporte a Pension Empleador: " << totalAPEmpr << endl;
-	cout << "Total Aporte a FSP: " << totalFSP << endl;
-	cout << "Total Retencion en la fuente: " << totalRetFuente << endl;
-	cout << "Total sueldos a pagar: " << totalSueldo << endl;
+	printf("Total Aporte a Salud Empleados: %.2f \n", totalASEmpl);
+	printf("Total Aporte a Salud Empleador: %.2f \n", totalASEmpr);
+	printf("Total Aporte a Pension Empleados: %.2f \n", totalAPEmpl);
+	printf("Total Aporte a Pension Empleador: %.2f \n", totalAPEmpr);
+	printf("Total Aporte a FSP: %.2f \n", totalFSP);
+	printf("Total Retencion en la fuente: %.2f \n", totalRetFuente);
+	printf("Total sueldos a pagar: %.2f \n", totalSueldo);
 	return 0;
 }
