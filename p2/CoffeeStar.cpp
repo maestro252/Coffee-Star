@@ -425,6 +425,7 @@ int main()
 	vector<string> ids;
 	vector<string> salary;
 	vector<float> salaries;
+	cout << "Se procede a leer el archivo de entrada...\n\n" << endl;
 	while(getline(in, line))
 	{
 			for(int i = 0; i < line.length() - 1; ++i){
@@ -451,9 +452,11 @@ int main()
 			float salaryF = salary;
 			salaries.push_back(salaryF);
 	}
+	cout << "Se crea el archivo de salida...\n\n" << endl;
 	ofstream out("out.txt");
 	if (out.is_open())
 	{
+		cout << "Se hacen los calculos de cada una de las entradas \n\n" << endl;
 		for (int i = 0; i < names.size(); ++i){
 			//Cedula
 			out << ids[i] << ";";
@@ -461,55 +464,74 @@ int main()
 			out << names[i] << ";";
 			//Salario base
 			out << salary[i] << ";";
+
+			cout << "Calculando datos de: " << names[i] << " cuya cedula es: "
+			<< ids[i] << " y gana " << salary[i] << "$" << "\n\n" << endl;
 			//Sueldo empleado en SLMVM
 			float nSalarios = numSalarios(salaries[i]);
 			out << formato(nSalarios) << ";";
+			cout << "-> SMLMV: " << formato(nSalarios) << endl;
 			//Aporte a salud empleado
 			float ase = aporteSaludEmpl(salaries[i]);
 			out << formato(ase) << ";";
+			cout << "-> aporte a salud del empleado: " << formato(ase) << endl;
 			//Aporte a salud empleador
 			float aser = aporteSaludEmpr(salaries[i]);
 			out << formato(aser) << ";";
+			cout << "-> aporte a salud del empleador: " << formato(aser) << endl;
 			//Aporte a pension empleado
 			float ape = aportePensionEmpl(salaries[i]);
 			out << formato(ape) << ";";
+			cout << "-> aporte a pension del empleado: " << formato(ape) << endl;
 			//Aporte a pension empleador
 			float aper = aportePensionEmpr(salaries[i]);
 			out << formato(aper) << ";";
+			cout << "-> aporte a pension del empleador: " << formato(aper) << endl;
 			//Aporte FSP
 			float fsp = FSP(salaries[i]);
 			out << formato(fsp) << ";";
+			cout << "-> aporte al FSP: " << formato(fsp) << endl;
 			//ILG
 			float ilg = ILG(salaries[i],ase,ape, fsp);
 			out << formato(ilg) << ";";
+			cout << "-> ILG: " << formato(ilg) << endl;
 			//Base Gravable
 			float bg = BaseG(ilg);
 			out << formato(bg) << ";";
+			cout << "-> Base gravable: " << formato(bg) << endl;
 			//Base Gravable en UVTs
 			float bgUVT = BaseGUVT(bg);
 			out << formato(bgUVT) << ";";
+			cout << "-> Base Gravable en UVT: " << formato(bgUVT) << endl;
 			//Tarifa de retencion
 			float tarifaRetencion = tarifaRet(bgUVT);
 			out << formato(tarifaRetencion) << ";";
+			cout << "-> Tarifa Retencion en la Fuente: " << formato(tarifaRetencion) << endl;
 			//Retencion en la fuente
 			float ret = RetFuente(bgUVT, tarifaRetencion);
 			out << formato(ret) << ";";
+			cout << "-> Retencion en la fuente: " << formato(ret) << endl;
 			//Subsidio de transporte
 			float subTrans = SubsidioTrans(salaries[i]);
 			out << formato(subTrans) << ";";
+			cout << "-> Subsidio de transporte: " << formato(subTrans) << endl;
 			//Total a pagar a empleado
 			float sueldo = SueldoPagar(ilg, ret, subTrans);
 			out << formato(sueldo) << ";";
 			out << endl;
+			cout << "-> Sueldo a entregar: " << formato(sueldo) << endl;
+			cout << "\n\n" << endl;
 		}
 		out.close();
+		cout << "\n\n calculo por cada entrada terminado...\n\n" << endl;
+		cout << "\n\ncalculando los totales por cada concepto...\n\n" << endl;
 	}
-	printf("Total Aporte a Salud Empleados: %.2f \n", totalASEmpl);
-	printf("Total Aporte a Salud Empleador: %.2f \n", totalASEmpr);
+	printf("Total Aporte a  Salud  Empleados: %.2f \n", totalASEmpl);
+	printf("Total Aporte a  Salud  Empleador: %.2f \n", totalASEmpr);
 	printf("Total Aporte a Pension Empleados: %.2f \n", totalAPEmpl);
 	printf("Total Aporte a Pension Empleador: %.2f \n", totalAPEmpr);
-	printf("Total Aporte a FSP: %.2f \n", totalFSP);
-	printf("Total Retencion en la fuente: %.2f \n", totalRetFuente);
-	printf("Total sueldos a pagar: %.2f \n", totalSueldo);
+	printf("Total Aporte a               FSP: %.2f \n", totalFSP);
+	printf("Total Retencion   en  la  fuente: %.2f \n", totalRetFuente);
+	printf("Total sueldos a  ser  entregados: %.2f \n", totalSueldo);
 	return 0;
 }
