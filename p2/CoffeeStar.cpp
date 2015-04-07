@@ -1,6 +1,3 @@
-// CoffeeStar.cpp : Defines the entry point for the console application.
-//
-
 #include "stdafx.h"
 #include <iostream>
 #include <string>
@@ -466,65 +463,65 @@ int main()
 			out << salary[i] << ";";
 
 			cout << "Calculando datos de: " << names[i] << " cuya cedula es: "
-			<< ids[i] << " y gana " << salary[i] << "$" << "\n\n" << endl;
+				<< ids[i] << " y gana $" << salary[i] << "\n\n" << endl;
 			//Sueldo empleado en SLMVM
 			float nSalarios = numSalarios(salaries[i]);
 			out << formato(nSalarios) << ";";
-			cout << "-> SMLMV: " << formato(nSalarios) << endl;
+			//cout << "-> SMLMV: " << formato(nSalarios) << endl;
 			//Aporte a salud empleado
 			float ase = aporteSaludEmpl(salaries[i]);
 			out << formato(ase) << ";";
-			cout << "-> aporte a salud del empleado: " << formato(ase) << endl;
+			//cout << "-> aporte a salud del empleado: " << formato(ase) << endl;
 			//Aporte a salud empleador
 			float aser = aporteSaludEmpr(salaries[i]);
 			out << formato(aser) << ";";
-			cout << "-> aporte a salud del empleador: " << formato(aser) << endl;
+			//cout << "-> aporte a salud del empleador: " << formato(aser) << endl;
 			//Aporte a pension empleado
 			float ape = aportePensionEmpl(salaries[i]);
 			out << formato(ape) << ";";
-			cout << "-> aporte a pension del empleado: " << formato(ape) << endl;
+			//cout << "-> aporte a pension del empleado: " << formato(ape) << endl;
 			//Aporte a pension empleador
 			float aper = aportePensionEmpr(salaries[i]);
 			out << formato(aper) << ";";
-			cout << "-> aporte a pension del empleador: " << formato(aper) << endl;
+			//cout << "-> aporte a pension del empleador: " << formato(aper) << endl;
 			//Aporte FSP
 			float fsp = FSP(salaries[i]);
 			out << formato(fsp) << ";";
-			cout << "-> aporte al FSP: " << formato(fsp) << endl;
+			//cout << "-> aporte al FSP: " << formato(fsp) << endl;
 			//ILG
 			float ilg = ILG(salaries[i],ase,ape, fsp);
 			out << formato(ilg) << ";";
-			cout << "-> ILG: " << formato(ilg) << endl;
+			//cout << "-> ILG: " << formato(ilg) << endl;
 			//Base Gravable
 			float bg = BaseG(ilg);
 			out << formato(bg) << ";";
-			cout << "-> Base gravable: " << formato(bg) << endl;
+			//cout << "-> Base gravable: " << formato(bg) << endl;
 			//Base Gravable en UVTs
 			float bgUVT = BaseGUVT(bg);
 			out << formato(bgUVT) << ";";
-			cout << "-> Base Gravable en UVT: " << formato(bgUVT) << endl;
+			//cout << "-> Base Gravable en UVT: " << formato(bgUVT) << endl;
 			//Tarifa de retencion
 			float tarifaRetencion = tarifaRet(bgUVT);
 			out << formato(tarifaRetencion) << ";";
-			cout << "-> Tarifa Retencion en la Fuente: " << formato(tarifaRetencion) << endl;
+			//cout << "-> Tarifa Retencion en la Fuente: " << formato(tarifaRetencion) << endl;
 			//Retencion en la fuente
 			float ret = RetFuente(bgUVT, tarifaRetencion);
 			out << formato(ret) << ";";
-			cout << "-> Retencion en la fuente: " << formato(ret) << endl;
+			//cout << "-> Retencion en la fuente: " << formato(ret) << endl;
 			//Subsidio de transporte
 			float subTrans = SubsidioTrans(salaries[i]);
 			out << formato(subTrans) << ";";
-			cout << "-> Subsidio de transporte: " << formato(subTrans) << endl;
+			//cout << "-> Subsidio de transporte: " << formato(subTrans) << endl;
 			//Total a pagar a empleado
 			float sueldo = SueldoPagar(ilg, ret, subTrans);
 			out << formato(sueldo) << ";";
 			out << endl;
-			cout << "-> Sueldo a entregar: " << formato(sueldo) << endl;
-			cout << "\n\n" << endl;
+			//cout << "-> Sueldo a entregar: " << formato(sueldo) << endl;
+			//cout << "\n\n" << endl;
 		}
 		out.close();
-		cout << "\n\n calculo por cada entrada terminado...\n\n" << endl;
-		cout << "\n\ncalculando los totales por cada concepto...\n\n" << endl;
+		cout << "\n\nCalculo por cada entrada terminado...\n\n" << endl;
+		cout << "\n\nCalculando los totales por cada concepto...\n\n" << endl;
 	}
 	printf("Total Aporte a  Salud  Empleados: %.2f \n", totalASEmpl);
 	printf("Total Aporte a  Salud  Empleador: %.2f \n", totalASEmpr);
