@@ -49,6 +49,10 @@ def calendario(y)
         day = (day + 1) % 7
       else
         if i == 2
+          if j <= 28
+            year << day 
+            day = (day + 1) % 7
+          end 
           if (y % 4 == 0 && y % 100 != 0) || (y % 4 == 0 && y % 100 == 0 && y % 400 == 0)
             if j == 29
               year << day 
