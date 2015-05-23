@@ -13,28 +13,43 @@ def dow(y, m, d)
 end
 
 def printCalendar(y)
- row = []
+  meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
+  dia = 0
+  row = []
   for i in 1..12
-    month = [[0, 1, 2, 3, 4, 5, 6]]
-    for j in 1..31
-      var = y[((i - 1) * 31) + j]
-      #puts var 
-      row.push(var)
-      #p row
-      if  y[((i - 1) * 31) + j] == 6
-        month.push(row)
+    puts meses[i - 1]
+    puts
+    puts
+    puts "D  L  M  W  J  V  S"
+    puts
+    puts
+    j = 1
+    while j <= 31
+      if y[(i - 1)*31 + j] != nil
+        if y[(i - 1)*31 + j] == dia
+          row << j
+          dia = (dia + 1) % 7
+          j += 1
+       else
+          row << ""
+          dia = (dia + 1) % 7
+        end 
+        if row.count == 7 || row[row.count - 1] == 31
+          p row
+          row = []
+          dia = 0
+        end
+      else 
+        p row if row.count > 0
+        dia = 0
         row = []
+        j = 32
       end 
     end
-    puts "Mes #{i}"
-    p month[0]
+    row = []
     puts
-    for i in 1..month.count - 1
-      p month[i]
-    end 
     puts
-  end
-
+  end 
 end 
 
 def calendario(y)
@@ -68,7 +83,7 @@ def calendario(y)
           end 
         end
       end 
-      if !(i == 1 || i == 3 || i == 5 || i == 7 || i == 8 || i == 10 || i == 12) && i != 2
+      if (i == 4 || i == 6 || i == 11 || i == 9)
         year << day if j <= 30 
         day = (day + 1) % 7 if j <= 30
         year << nil if j > 30
@@ -84,9 +99,5 @@ puts "Ingrese año el año a calcular"
 
 y = gets.chomp.to_i
 a = calendario y
-
 printCalendar a
-puts a.length
-puts a[35]
-p a
 
