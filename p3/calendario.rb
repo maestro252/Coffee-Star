@@ -12,7 +12,7 @@ def dow(y, m, d)
   return (y + y/4 - y/100 + y/400 + t[m-1] + d) % 7
 end
 
-def calcularFestivos(y)
+def calcularFestivos(y, anio)
   #1 de enero - Año Nuevo
   #Jueves Santo
   #Viernes Santo
@@ -42,6 +42,84 @@ def calcularFestivos(y)
   #25 de diciembre
 
   y[11*31 + 25] *= -1
+
+  # 6 de enero - Epifanía del Señor
+  # 19 de marzo - Día de San José
+  # !!Ascensión del Señor (Sexto domingo después de Pascua)
+  # !!Corpus Christi (Octavo domingo después de Pascua)
+  # !!Sagrado Corazón de Jesús (Noveno domingo después de Pascua)
+  # !!jueves y viernes santo (semana anterior a pascua)
+  # 29 de Junio San Pedro y San Pablo
+  # 15 de agosto - Asunción de la Virgen!
+  # 12 de octubre - Día de la Raza
+  # 1 de noviembre - Todos los Santos
+  # 11 de noviembre - Independencia de Cartagena.
+
+  # #6 de enero
+
+  y[((7 - y[6] + 1) % 7) + (6)] *= -1
+
+  # #19 de marzo
+
+  y[((7 - y[2*31 + 19] + 1) % 7) + (2*31 + 19)] *= -1
+
+
+  # #29 de Junio
+
+  y[((7 - y[5*31 + 29] + 1) % 7) + (5*31 + 29)] *= -1
+
+  # #15 de agosto
+
+  y[((7 - y[7*31 + 15] + 1) % 7) + (7*31 + 15)] *= -1
+
+  # #12 de octubre
+
+  y[((7 - y[9*31 + 12] + 1) % 7) + (9*31 + 12)] *= -1
+
+  # #1 de noviembre
+
+  y[((7 - y[10*31 + 1] + 1) % 7) + (10*31 + 1)] *= -1
+
+  # #11 de noviembre
+
+  y[((7 - y[10*31 + 11] + 1) % 7) + (10*31 + 11)] *= -1
+
+  # #Calculo del domingo de pascua
+
+  a = anio % 19
+  b = anio / 100
+  c = anio % 100
+  d = b / 4
+  e = b % 4
+  f = (b + 8) / 25
+  g = (b - f + 1) / 3
+  h = (19*a + b - d - g + 15) % 30
+  i = c / 4
+  k = c % 4
+  l = (32 + 2*e + 2*i - h - k) % 7
+  m = (a + 11*h + 22* l) / 451
+  n = h + l - 7*m + 144
+  monthOfEaster = n / 31
+  dayOfEaster = 1 + (n % 31)
+
+  monthOfEaster -= 1
+  dayOfEaster += 1
+
+  y[(monthOfEaster - 1)*31 + dayOfEaster - 2] *= -1 #viernes santo
+  y[(monthOfEaster - 1)*31 + dayOfEaster - 3] *= -1 # jueves santo
+
+  #dia de la ascencion y[((7 - y[10*31 + 11] + 1) % 7) + (10*31 + 11)] *= -1
+
+  y[((7 - y[(monthOfEaster - 1)*31 + dayOfEaster + 42] + 1) % 7) + ((monthOfEaster - 1)*31 + dayOfEaster + 42)] *= -1
+
+  #corpus Christi
+
+  y[((7 - y[(monthOfEaster - 1)*31 + dayOfEaster + 63] + 1) % 7) + ((monthOfEaster - 1)*31 + dayOfEaster + 63)] *= -1
+  #sagrado corazon
+
+  y[((7 - y[(monthOfEaster - 1)*31 + dayOfEaster + 70] + 1) % 7) + ((monthOfEaster - 1)*31 + dayOfEaster + 70)] *= -1
+
+
 
 
   return y
@@ -189,7 +267,7 @@ puts "Ingrese el año a calcular"
 
 y = gets.chomp.to_i
 a = calendario y
-a = calcularFestivos a
+a = calcularFestivos a, y
 printCalendar a
 
 puts "El 31 de Mayo es #{a[4*31 + 31]}"
