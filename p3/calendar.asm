@@ -26,9 +26,11 @@ SECTION .data		; data section
 	;ltime db __TIME__,0ax
 	;utcTime db __UTC_TIME__,0ax
 	lenDate: equ $-date
-	array: times 373 db 8
+	array: times 373 db 20
 	lenArray: equ $-array
 	tArr: db 0,3,2,5,0,3,5,1,4,6,2,4
+	header: db "D    L    M    W    J    V    S"
+	lenHeader: equ $-header
 	;lenLTime: equ $-ltime
 	;lenUtcTime: equ $-utcTime
 
@@ -42,7 +44,21 @@ SECTION .bss
 	dayofweek resd 1
 	i resd 1
 	j resd 1
+	a resd 1
+	b resd 1
+	c resd 1
+	e resd 1
+	f resd 1
+	g resd 1
+	h resd 1
+	k resd 1
+	l resd 1
+	n resd 1
+	monthOfEaster resd 1
+	dayOfEaster resd 1
+
 	index resd 1
+	res resd 1
 	lenType resd 1
 	lenParam resd 1
 	year resd 1
@@ -156,6 +172,7 @@ isYear:
 	mov [year], eax
 
 	call CalcCalendar
+	call holidaysOfYear
 	call printArray
 
 	;-------
@@ -291,7 +308,7 @@ write_digit:
 	push ebx
 	push ecx
 	push edx
-	mov eax, 4                  ; system call #4 = sys_write
+	mov eax, 4                  ; system call ;4 = sys_write
 	mov ebx, 1                  ; file descriptor 1 = stdout
 	mov ecx, digit              ; store *address* of digit into ecx
 	mov edx, 16                 ; byte size of 16
@@ -667,6 +684,461 @@ printArray:
 	mov [index], ebx
 	jmp .for
 	.exitFor:
+	ret
+
+holidaysOfYear:
+;1 de enero - Año Nuevo
+;Jueves Santo
+;Viernes Santo
+;1 de mayo – Día del Trabajo
+;20 de julio – Independencia Nacional 7 de agosto – Batalla de Boyacá
+;8 de diciembre - Inmaculada Concepción 25 de diciembre - Navidad
+
+; 1 de enero
+mov ebx, 1
+movzx eax, byte[array+ebx]
+mov ecx, 10
+add eax, ecx
+mov [res], eax
+mov al, [res]
+mov [array+ebx], al
+;y[1] *= -1
+
+;1 de mayo
+mov ebx, 125     ;4*31+1
+movzx eax, byte[array+ebx]
+mov ecx, 10
+add eax, ecx
+mov [res], eax
+mov al, [res]
+mov [array+ebx], al
+;y[4*31 + 1] *= -1
+
+;20 de julio
+mov ebx, 206     ;6*31+20
+movzx eax, byte[array+ebx]
+mov ecx, 10
+add eax, ecx
+mov [res], eax
+mov al, [res]
+mov [array+ebx], al
+;y[6*31 + 20] *= -1
+
+;8 de diciembre
+mov ebx, 349     ;11*31+8
+movzx eax, byte[array+ebx]
+mov ecx, 10
+add eax, ecx
+mov [res], eax
+mov al, [res]
+mov [array+ebx], al
+;y[11*31 + 8] *= -1
+
+;7 de agosto
+mov ebx, 224     ;7*31+7
+movzx eax, byte[array+ebx]
+mov ecx, 10
+add eax, ecx
+mov [res], eax
+mov al, [res]
+mov [array+ebx], al
+;y[7*31 + 7] *= -1
+
+;25 de diciembre
+mov ebx, 366     ;11*31+25
+movzx eax, byte[array+ebx]
+mov ecx, 10
+add eax, ecx
+mov [res], eax
+mov al, [res]
+mov [array+ebx], al
+;y[11*31 + 25] *= -1
+
+; 6 de enero - Epifanía del Señor
+; 19 de marzo - Día de San José
+; !!Ascensión del Señor (Sexto domingo después de Pascua)
+; !!Corpus Christi (Octavo domingo después de Pascua)
+; !!Sagrado Corazón de Jesús (Noveno domingo después de Pascua)
+; !!jueves y viernes santo (semana anterior a pascua)
+; 29 de Junio San Pedro y San Pablo
+; 15 de agosto - Asunción de la Virgen!
+; 12 de octubre - Día de la Raza
+; 1 de noviembre - Todos los Santos
+; 11 de noviembre - Independencia de Cartagena.
+
+; ;6 de enero
+mov eax, 8
+movzx ebx, byte[array+6]
+sub eax, ebx
+mov ecx, 7
+xor edx, edx
+div ecx
+mov eax, edx
+add eax, 6
+mov ebx, eax
+movzx eax, byte[array+ebx]
+mov ecx, 10
+add eax, ecx
+mov [res], eax
+mov al, [res]
+mov [array+ebx], al
+;y[((7 - y[6] + 1) % 7) + (6)] *= -1
+
+; ;19 de marzo
+mov eax, 8
+movzx ebx, byte[array+81]
+sub eax, ebx
+mov ecx, 7
+xor edx, edx
+div ecx
+mov eax, edx
+add eax, 81
+mov ebx, eax
+movzx eax, byte[array+ebx]
+mov ecx, 10
+add eax, ecx
+mov [res], eax
+mov al, [res]
+mov [array+ebx], al
+;y[((7 - y[2*31 + 19] + 1) % 7) + (2*31 + 19)] *= -1
+
+
+; ;29 de Junio
+mov eax, 8
+movzx ebx, byte[array+184]
+sub eax, ebx
+mov ecx, 7
+xor edx, edx
+div ecx
+mov eax, edx
+add eax, 184
+mov ebx, eax
+movzx eax, byte[array+ebx]
+mov ecx, 10
+add eax, ecx
+mov [res], eax
+mov al, [res]
+mov [array+ebx], al
+;y[((7 - y[5*31 + 29] + 1) % 7) + (5*31 + 29)] *= -1
+
+; ;15 de agosto
+mov eax, 8
+movzx ebx, byte[array+232]
+sub eax, ebx
+mov ecx, 7
+xor edx, edx
+div ecx
+mov eax, edx
+add eax, 232
+mov ebx, eax
+movzx eax, byte[array+ebx]
+mov ecx, 10
+add eax, ecx
+mov [res], eax
+mov al, [res]
+mov [array+ebx], al
+;y[((7 - y[7*31 + 15] + 1) % 7) + (7*31 + 15)] *= -1
+
+; ;12 de octubre
+mov eax, 8
+movzx ebx, byte[array+291]
+sub eax, ebx
+mov ecx, 7
+xor edx, edx
+div ecx
+mov eax, edx
+add eax, 291
+mov ebx, eax
+movzx eax, byte[array+ebx]
+mov ecx, 10
+add eax, ecx
+mov [res], eax
+mov al, [res]
+mov [array+ebx], al
+;y[((7 - y[9*31 + 12] + 1) % 7) + (9*31 + 12)] *= -1
+
+; ;1 de noviembre
+mov eax, 8
+movzx ebx, byte[array+311]
+sub eax, ebx
+mov ecx, 7
+xor edx, edx
+div ecx
+mov eax, edx
+add eax, 311
+mov ebx, eax
+movzx eax, byte[array+ebx]
+mov ecx, 10
+add eax, ecx
+mov [res], eax
+mov al, [res]
+mov [array+ebx], al
+;y[((7 - y[10*31 + 1] + 1) % 7) + (10*31 + 1)] *= -1
+
+; ;11 de noviembre
+mov eax, 8
+movzx ebx, byte[array+321]
+sub eax, ebx
+mov ecx, 7
+xor edx, edx
+div ecx
+mov eax, edx
+add eax, 321
+mov ebx, eax
+movzx eax, byte[array+ebx]
+mov ecx, 10
+add eax, ecx
+mov [res], eax
+mov al, [res]
+mov [array+ebx], al
+;y[((7 - y[10*31 + 11] + 1) % 7) + (10*31 + 11)] *= -1
+
+; ;Calculo del domingo de pascua
+;a = anio % 19
+mov eax, [year]
+mov ebx, 19
+xor edx, edx
+div ebx
+mov [a], edx
+;b = anio / 100
+mov eax, [year]
+mov ebx, 100
+xor edx, edx
+div ebx
+mov [b], eax
+;c = anio % 100
+mov eax, [year]
+mov ebx, 100
+xor edx, edx
+div ebx
+mov [c], edx
+;d = b / 4
+mov eax, [b]
+mov ebx, 4
+xor edx, edx
+div ebx
+mov [d], eax
+;e = b % 4
+mov eax, [b]
+mov ebx, 4
+xor edx, edx
+div ebx
+mov [e], edx
+;f = (b + 8) / 25
+mov eax, [b]
+add eax, 8
+mov ebx, 25
+xor edx, edx
+div ebx
+mov [f], eax
+;g = (b - f + 1) / 3
+mov eax, [b]
+inc eax
+sub eax, [f]
+mov ebx, 3
+xor edx, edx
+div ebx
+mov [g], eax
+;h = (19*a + b - d - g + 15) % 30
+mov eax, [a]
+mov ebx, 19
+mul ebx
+add eax, [b]
+sub eax, [d]
+sub eax, [g]
+add eax, 15
+mov ebx, 30
+xor edx, edx
+div ebx
+mov [h], edx
+;i = c / 4
+mov eax, [c]
+mov ebx, 4
+xor edx, edx
+div ebx
+mov [i], eax
+;k = c % 4
+mov eax, [c]
+mov ebx, 4
+xor edx, edx
+div ebx
+mov [k], edx
+;l = (32 + 2*e + 2*i - h - k) % 7
+mov eax, [e]
+mov ebx, 2
+mul ebx
+add eax, 32
+mov ecx, eax
+mov eax, [i]
+mov ebx, 2
+mul ebx
+add eax, ecx
+sub eax, [h]
+sub eax, [k]
+mov ebx, 7
+xor edx, edx
+div ebx
+mov [l], edx
+;m = (a + 11*h + 22* l) / 451
+mov eax, [h]
+mov ebx, 11
+mul ebx
+add eax, [a]
+mov ecx, eax
+mov eax, [l]
+mov ebx, 22
+mul ebx
+add eax, ecx
+mov ebx, 451
+xor edx, edx
+div ebx
+mov [m], eax
+;n = h + l - 7*m + 144
+mov eax, [m]
+mov ebx, 7
+mul ebx
+mov ecx, eax
+mov eax, [h]
+add eax, [l]
+sub eax, ecx
+add eax, 144
+mov [n], eax
+;monthOfEaster = n / 31
+mov eax, [n]
+mov ebx, 31
+xor edx, edx
+div ebx
+dec eax
+mov [monthOfEaster], eax
+;dayOfEaster = 1 + (n % 31)
+mov eax, [n]
+mov ebx, 31
+xor edx, edx
+div ebx
+mov eax, edx
+add eax, 2
+mov [dayOfEaster], eax
+;monthOfEaster -= 1
+;dayOfEaster += 1
+
+;y[(monthOfEaster - 1)*31 + dayOfEaster - 2] *= -1 ;viernes santo
+mov eax, [monthOfEaster]
+dec eax
+mov ebx, 31
+mul ebx
+mov ecx, eax
+mov eax, [dayOfEaster]
+sub eax, 2
+add eax, ecx
+mov ebx, eax
+movzx eax, byte[array+ebx]
+mov ecx, 10
+add eax, ecx
+mov [res], eax
+mov al, [res]
+mov [array+ebx], al
+;y[(monthOfEaster - 1)*31 + dayOfEaster - 3] *= -1 ; jueves santo
+mov eax, [monthOfEaster]
+dec eax
+mov ebx, 31
+mul ebx
+mov ecx, eax
+mov eax, [dayOfEaster]
+sub eax, 3
+add eax, ecx
+mov ebx, eax
+movzx eax, byte[array+ebx]
+mov ecx, 10
+add eax, ecx
+mov [res], eax
+mov al, [res]
+mov [array+ebx], al
+
+;dia de la ascencion
+	mov eax, [monthOfEaster]
+	dec eax
+	mov ebx, 31
+	mul ebx
+	mov ecx, eax
+	mov eax, [dayOfEaster]
+	add eax, 42
+	add eax, ecx
+	mov [index], eax
+	movzx eax, byte[array+eax]
+	mov ebx, 7
+	sub ebx, eax
+	inc ebx
+	mov eax, ebx
+	mov ecx, 7
+	xor edx, edx
+	div ecx
+	mov ebx, edx
+	add ebx, [index]
+	movzx eax, byte[array+ebx]
+	mov ecx, 10
+	add eax, ecx
+	mov [res], eax
+	mov al, [res]
+	mov [array+ebx], al
+
+	;y[((7 - y[(monthOfEaster - 1)*31 + dayOfEaster + 42] + 1) % 7) + ((monthOfEaster - 1)*31 + dayOfEaster + 42)] *= -1
+
+	;corpus Christi
+	mov eax, [monthOfEaster]
+	dec eax
+	mov ebx, 31
+	mul ebx
+	mov ecx, eax
+	mov eax, [dayOfEaster]
+	add eax, 63
+	add eax, ecx
+	mov [index], eax
+	movzx eax, byte[array+eax]
+	mov ebx, 7
+	sub ebx, eax
+	inc ebx
+	mov eax, ebx
+	mov ecx, 7
+	xor edx, edx
+	div ecx
+	mov ebx, edx
+	add ebx, [index]
+	movzx eax, byte[array+ebx]
+	mov ecx, 10
+	add eax, ecx
+	mov [res], eax
+	mov al, [res]
+	mov [array+ebx], al
+	;y[((7 - y[(monthOfEaster - 1)*31 + dayOfEaster + 63] + 1) % 7) + ((monthOfEaster - 1)*31 + dayOfEaster + 63)] *= -1
+
+	;sagrado corazon
+	mov eax, [monthOfEaster]
+	dec eax
+	mov ebx, 31
+	mul ebx
+	mov ecx, eax
+	mov eax, [dayOfEaster]
+	add eax, 70
+	add eax, ecx
+	mov [index], eax
+	movzx eax, byte[array+eax]
+	mov ebx, 7
+	sub ebx, eax
+	inc ebx
+	mov eax, ebx
+	mov ecx, 7
+	xor edx, edx
+	div ecx
+	mov ebx, edx
+	add ebx, [index]
+	movzx eax, byte[array+ebx]
+	mov ecx, 10
+	add eax, ecx
+	mov [res], eax
+	mov al, [res]
+	mov [array+ebx], al
+;y[((7 - y[(monthOfEaster - 1)*31 + dayOfEaster + 70] + 1) % 7) + ((monthOfEaster - 1)*31 + dayOfEaster + 70)] *= -1
+
 	ret
 
 Error:
