@@ -26,7 +26,8 @@ SECTION .data		; data section
 	;ltime db __TIME__,0ax
 	;utcTime db __UTC_TIME__,0ax
 	lenDate: equ $-date
-	array: times 375 db 8
+	array: times 373 db 8
+	lenArray: equ $-array
 	tArr: db 0,3,2,5,0,3,5,1,4,6,2,4
 	;lenLTime: equ $-ltime
 	;lenUtcTime: equ $-utcTime
@@ -155,6 +156,7 @@ isYear:
 	mov [year], eax
 
 	call CalcCalendar
+	call printArray
 
 	;-------
 	;mov eax, [year]
@@ -257,7 +259,7 @@ intToString:
 	mov dword[digit], 0
 	mov   ebp, esp
 	mov   ecx, 10
-	push 0x0a  ;End of line \n
+	push 20h  ;End of line \n
 
 	.pushDigits:
 		xor edx, edx        ; zero-extend eax
@@ -515,7 +517,7 @@ CalcCalendar:
 	jnz .exitIf1
 	mov eax, [j]
 	cmp eax, 28
-	jnz .exitIf2
+	jg .exitIf2
 	mov ebx, [index]
 	mov al, [dayofweek]
 	mov [array+ebx], al
@@ -648,6 +650,23 @@ CalcCalendar:
 	jmp .fori
 
 	.exitFori:
+	ret
+
+printArray:
+	mov ebx, 0
+	mov [index], ebx
+	.for:
+	mov ebx, [index]
+	cmp ebx, lenArray
+	jge .exitFor
+	movzx eax, byte[array+ebx]
+	mov edi, digit
+	call intToString
+	call write_digit
+	inc ebx
+	mov [index], ebx
+	jmp .for
+	.exitFor:
 	ret
 
 Error:
