@@ -21,27 +21,27 @@ def calcularFestivos(y, anio)
   #8 de diciembre - Inmaculada Concepción 25 de diciembre - Navidad
 
   # 1 de enero
-  y[1] *= -1
+  y[1] += 10
 
   #1 de mayo
 
-  y[4*31 + 1] *= -1
+  y[4*31 + 1] += 10
 
   #20 de julio
 
-  y[6*31 + 20] *= -1
+  y[6*31 + 20] += 10
 
   #8 de diciembre
 
-  y[11*31 + 8] *= -1
+  y[11*31 + 8] += 10
 
   #7 de agosto
 
-  y[7*31 + 7] *= -1
+  y[7*31 + 7] += 10
 
   #25 de diciembre
 
-  y[11*31 + 25] *= -1
+  y[11*31 + 25] += 10
 
   # 6 de enero - Epifanía del Señor
   # 19 de marzo - Día de San José
@@ -57,32 +57,32 @@ def calcularFestivos(y, anio)
 
   # #6 de enero
 
-  y[((7 - y[6] + 1) % 7) + (6)] *= -1
+  y[((7 - y[6] + 1) % 7) + (6)] += 10
 
   # #19 de marzo
 
-  y[((7 - y[2*31 + 19] + 1) % 7) + (2*31 + 19)] *= -1
+  y[((7 - y[2*31 + 19] + 1) % 7) + (2*31 + 19)] += 10
 
 
   # #29 de Junio
 
-  y[((7 - y[5*31 + 29] + 1) % 7) + (5*31 + 29)] *= -1
+  y[((7 - y[5*31 + 29] + 1) % 7) + (5*31 + 29)] += 10
 
   # #15 de agosto
 
-  y[((7 - y[7*31 + 15] + 1) % 7) + (7*31 + 15)] *= -1
+  y[((7 - y[7*31 + 15] + 1) % 7) + (7*31 + 15)] += 10
 
   # #12 de octubre
 
-  y[((7 - y[9*31 + 12] + 1) % 7) + (9*31 + 12)] *= -1
+  y[((7 - y[9*31 + 12] + 1) % 7) + (9*31 + 12)] += 10
 
   # #1 de noviembre
 
-  y[((7 - y[10*31 + 1] + 1) % 7) + (10*31 + 1)] *= -1
+  y[((7 - y[10*31 + 1] + 1) % 7) + (10*31 + 1)] += 10
 
   # #11 de noviembre
 
-  y[((7 - y[10*31 + 11] + 1) % 7) + (10*31 + 11)] *= -1
+  y[((7 - y[10*31 + 11] + 1) % 7) + (10*31 + 11)] += 10
 
   # #Calculo del domingo de pascua
 
@@ -105,19 +105,19 @@ def calcularFestivos(y, anio)
   monthOfEaster -= 1
   dayOfEaster += 1
 
-  y[(monthOfEaster - 1)*31 + dayOfEaster - 2] *= -1 #viernes santo
-  y[(monthOfEaster - 1)*31 + dayOfEaster - 3] *= -1 # jueves santo
+  y[(monthOfEaster - 1)*31 + dayOfEaster - 2] += 10 #viernes santo
+  y[(monthOfEaster - 1)*31 + dayOfEaster - 3] += 10 # jueves santo
 
-  #dia de la ascencion y[((7 - y[10*31 + 11] + 1) % 7) + (10*31 + 11)] *= -1
+  #dia de la ascencion y[((7 - y[10*31 + 11] + 1) % 7) + (10*31 + 11)] += 10
 
-  y[((7 - y[(monthOfEaster - 1)*31 + dayOfEaster + 42] + 1) % 7) + ((monthOfEaster - 1)*31 + dayOfEaster + 42)] *= -1
+  y[((7 - y[(monthOfEaster - 1)*31 + dayOfEaster + 42] + 1) % 7) + ((monthOfEaster - 1)*31 + dayOfEaster + 42)] += 10
 
   #corpus Christi
 
-  y[((7 - y[(monthOfEaster - 1)*31 + dayOfEaster + 63] + 1) % 7) + ((monthOfEaster - 1)*31 + dayOfEaster + 63)] *= -1
+  y[((7 - y[(monthOfEaster - 1)*31 + dayOfEaster + 63] + 1) % 7) + ((monthOfEaster - 1)*31 + dayOfEaster + 63)] += 10
   #sagrado corazon
 
-  y[((7 - y[(monthOfEaster - 1)*31 + dayOfEaster + 70] + 1) % 7) + ((monthOfEaster - 1)*31 + dayOfEaster + 70)] *= -1
+  y[((7 - y[(monthOfEaster - 1)*31 + dayOfEaster + 70] + 1) % 7) + ((monthOfEaster - 1)*31 + dayOfEaster + 70)] += 10
 
 
 
@@ -142,9 +142,9 @@ def printCalendar(y)
 
       if y[(i - 1)*31 + j] != nil
 
-        if y[(i - 1)*31 + j].abs == dia
+        if y[(i - 1)*31 + j] % 10 == dia
 
-          if y[(i - 1)*31 + j] <= 0
+          if y[(i - 1)*31 + j] == 0 || y[(i - 1)*31 + j] > 10
 
             row << ("F " + j.to_s)
 
@@ -273,5 +273,5 @@ printCalendar a
 puts "El 31 de Mayo es #{a[4*31 + 31]}"
 puts
 puts a.count
-puts a
+p a
 
