@@ -273,3 +273,5 @@ printCalendar a
 puts "El 31 de Mayo es #{a[4*31 + 31]}"
 puts
 puts a.count
+puts a
+
