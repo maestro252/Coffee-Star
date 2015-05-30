@@ -2,8 +2,10 @@ SECTION .data		; data section
 	ln:	db "",0xa
 	lenLn:	equ $-ln		; "$" means "here"
 							; len is a value, not an address
-	nParams: db "",0xa
 	date db __DATE__,0ax, 0xD
+	lenDate: equ $-date
+
+	nParams: db "",0xa
 	dParam: db "-d",0
 	lenD: equ $-dParam
 	yParam: db "-y",0
@@ -25,13 +27,51 @@ SECTION .data		; data section
 	lenBinSh: equ $-binSh
 	;ltime db __TIME__,0ax
 	;utcTime db __UTC_TIME__,0ax
-	lenDate: equ $-date
 	array: times 373 db 20
 	lenArray: equ $-array
+	arrayP: times 35 db " "
+	lenArrayP: equ $-arrayP
 	tArr: db 0,3,2,5,0,3,5,1,4,6,2,4
-	header: db "D    L    M    W    J    V    S"
+	header: db "D    L    M    W    J    V    S", 0xa
 	lenHeader: equ $-header
-	;lenLTime: equ $-ltime
+	spaceNull: db "     ", 0
+	lenSpaceN: equ $-spaceNull
+	spaceSimple: db " ",0
+	lenSpaceS: equ $-spaceSimple
+	spaceDouble: db "  ",0
+	lenSpaceD: equ $-spaceDouble
+	spaceTriple: db "   ",0
+	lenSpaceT: equ $-spaceTriple
+	spaceQuad: db "    ",0
+	lenSpaceQ: equ $-spaceQuad
+	fChar: db "F ", 0
+	lenFChar: equ $-fChar
+
+	january: db "Enero",0xa
+	lenJanuary: equ $-january
+	february: db "Febrero",0xa
+	lenFebruary: equ $-february
+	march: db "Marzo",0xa
+	lenMarch: equ $-march
+	april: db "Abril",0xa
+	lenApril: equ $-april
+	may: db "Mayo",0xa
+	lenMay: equ $-may
+	june: db "Junio",0xa
+	lenJune: equ $-june
+	july: db "Julio",0xa
+	lenJuly: equ $-july
+	august: db "Agosto",0xa
+	lenAugust: equ $-august
+	september: db "Septiembre",0xa
+	lenSeptember: equ $-september
+	october: db "Octubre",0xa
+	lenOctober: equ $-october
+	november: db "Noviembre",0xa
+	lenNovember: equ $-november
+	december: db "Diciembre",0xa
+	lenDecember: equ $-december
+  ;lenLTime: equ $-ltime
 	;lenUtcTime: equ $-utcTime
 
 SECTION .bss
@@ -56,7 +96,7 @@ SECTION .bss
 	n resd 1
 	monthOfEaster resd 1
 	dayOfEaster resd 1
-
+	last resd 1
 	index resd 1
 	res resd 1
 	lenType resd 1
@@ -84,6 +124,22 @@ SECTION .bss
 		mov eax, 01h    ; exit()
 		xor ebx, ebx    ; exit code ---- 0=normal
 		int 80h					; interrupt 80 hex, call kernel
+	%endmacro
+
+	%macro resetRow 0
+		mov ebx, 0
+		mov [index], ebx
+		.forInit:
+		mov ebx, [index]
+		cmp ebx, lenArrayP
+		jge .exitForInit
+		mov al, ' '
+		mov [arrayP+ebx], al
+		inc ebx
+		mov [index], ebx
+		jmp .forInit
+		.exitForInit:
+		ret
 	%endmacro
 
 SECTION .text		; code section
@@ -165,6 +221,12 @@ isYear:
 	;Validar si el argumento es -y o -d
 	pop	ebx		; "year or date"
 	mov [param], ebx
+
+	mov edi, ebx
+	call Length
+	write_string ebx, ecx
+	write_string ln, lenLn
+	;write_string param, 16
 	;Validar si el argumento es solo compuesto por numeros y tienen la longitud necesaria
 	;call printf
 	mov edx, [param]
@@ -173,8 +235,8 @@ isYear:
 
 	call CalcCalendar
 	call holidaysOfYear
-	call printArray
-
+	;call printArray
+	call printCalendar
 	;-------
 	;mov eax, [year]
 	;mov ebx, 1h
@@ -276,7 +338,7 @@ intToString:
 	mov dword[digit], 0
 	mov   ebp, esp
 	mov   ecx, 10
-	push 20h  ;End of line \n
+	;push 20h  ;End of line \n
 
 	.pushDigits:
 		xor edx, edx        ; zero-extend eax
@@ -1139,6 +1201,246 @@ mov [array+ebx], al
 	mov [array+ebx], al
 ;y[((7 - y[(monthOfEaster - 1)*31 + dayOfEaster + 70] + 1) % 7) + ((monthOfEaster - 1)*31 + dayOfEaster + 70)] *= -1
 
+	ret
+
+printCalendar:
+	mov eax, 0
+	mov [dayofweek], eax
+	call InitArr
+;	resetRow
+	mov ebx, 0
+	mov [index], ebx
+	mov ecx, 0
+	mov [i], ecx
+	.forMonths:
+	mov ecx, [i]
+	inc ecx
+	mov [i], ecx
+	cmp ecx, 12
+	jg .exitForMonths
+	cmp ecx, 1
+	jnz .next1
+	write_string january, lenJanuary
+	jmp .format
+	.next1:
+	cmp ecx, 2
+	jnz .next2
+	write_string february, lenFebruary
+	jmp .format
+	.next2:
+	cmp ecx, 3
+	jnz .next3
+	write_string march, lenMarch
+	jmp .format
+	.next3:
+	cmp ecx, 4
+	jnz .next4
+	write_string april, lenApril
+	jmp .format
+	.next4:
+	cmp ecx, 5
+	jnz .next5
+	write_string may, lenMay
+	jmp .format
+	.next5:
+	cmp ecx, 6
+	jnz .next6
+	write_string june, lenJune
+	jmp .format
+	.next6:
+	cmp ecx, 7
+	jnz .next7
+	write_string july, lenJuly
+	jmp .format
+	.next7:
+	cmp ecx, 8
+	jnz .next8
+	write_string august, lenAugust
+	jmp .format
+	.next8:
+	cmp ecx, 9
+	jnz .next9
+	write_string september, lenSeptember
+	jmp .format
+	.next9:
+	cmp ecx, 10
+	jnz .next10
+	write_string october, lenOctober
+	jmp .format
+	.next10:
+	cmp ecx, 11
+	jnz .next11
+	write_string november, lenNovember
+	jmp .format
+	.next11:
+	cmp ecx, 12
+	jnz .forMonths
+	write_string december, lenDecember
+
+	.format:
+	write_string header, lenHeader
+	mov ebx, 1
+	mov [j], ebx
+	.whilej:
+	mov ebx, [j]
+	cmp ebx, 31
+	jg .exitWhilej
+	mov eax, [i]
+	dec eax
+	mov ecx, 31
+	mul ecx
+	add eax, [j]
+	mov [res], eax
+	mov ebx, [res]
+	movzx eax, byte[array+ebx]
+	cmp eax, 20
+	jz .elseNull
+	mov ebx, [res]
+	movzx eax, byte[array+ebx]
+	mov ecx, 10
+	xor edx, edx
+	div ecx
+	mov eax, edx
+	cmp eax, [dayofweek]
+	jnz .elseNoHoly
+	mov ebx, [res]
+	movzx eax, byte[array+ebx]
+	cmp eax, 0
+	jz .isHoly
+	mov ebx, [res]
+	movzx eax, byte[array+ebx]
+	cmp eax, 10
+	jb .isNormal
+
+	.isHoly:
+	write_string fChar, lenFChar
+	mov eax, [j]
+	mov [last], eax
+	cmp eax, 10
+	jb .addSpaceHoly
+	mov edi, digit
+	call intToString
+	call write_digit
+	write_string spaceSimple, lenSpaceS
+	.contine2:
+	mov ebx, [index]
+	inc ebx
+	mov [index], ebx
+	jmp .continue
+
+	.addSpaceHoly:
+	mov eax, [j]
+	mov edi, digit
+	call intToString
+	call write_digit
+	write_string spaceDouble, lenSpaceD
+	jmp .contine2
+
+	.isNormal:
+	mov ebx, [res]
+	movzx eax, byte[array+ebx]
+	cmp eax, 0
+	jbe .continue
+	mov eax, [j]
+	mov [last], eax
+	cmp eax, 10
+	jb .addSpaceNormal
+	mov edi, digit
+	call intToString
+	call write_digit
+	write_string spaceTriple, lenSpaceT
+	.continue3:
+	mov ebx, [index]
+	inc ebx
+	mov [index], ebx
+
+	.continue:
+	mov eax, [dayofweek]
+	inc eax
+	mov ecx, 7
+	xor edx, edx
+	div ecx
+	mov [dayofweek], edx
+	mov ebx, [j]
+	inc ebx
+	mov [j], ebx
+	jmp .newRow
+
+	.addSpaceNormal:
+	mov eax, [j]
+	mov edi, digit
+	call intToString
+	call write_digit
+	write_string spaceQuad, lenSpaceQ
+	jmp .continue3
+
+	.elseNoHoly:
+		write_string spaceNull, lenSpaceN
+		mov eax, -1
+		mov [last], eax
+		mov ebx, [index]
+		inc ebx
+		mov [index], ebx
+		mov eax, [dayofweek]
+		inc eax
+		mov ecx, 7
+		xor edx, edx
+		div ecx
+		mov [dayofweek], edx
+
+		.newRow:
+		mov eax, [index]
+		cmp eax, 7
+		jz .newLine
+		mov ebx, [last]
+		cmp ebx, 31
+		jz .newLine
+		;row[row.count - 1] == 31
+		jmp .exitElseNull
+
+		.newLine:
+		write_string ln, lenLn
+		mov ebx, 0
+		mov [dayofweek], ebx
+		mov [index], ebx
+		jmp .exitElseNull
+
+		.elseNull:
+		write_string ln, lenLn
+		mov ebx, 0
+		mov [dayofweek], ebx
+		mov [index], ebx
+		mov ecx, 32
+		mov [j], ecx
+
+		.exitElseNull:
+		jmp .whilej
+
+		.exitWhilej:
+		write_string ln, lenLn
+		write_string ln, lenLn
+		mov ebx, 0
+		mov [index], ebx
+
+		jmp .forMonths
+
+		.exitForMonths:
+		ret
+
+InitArr:
+	mov ebx, 0
+	mov [index], ebx
+	.forInit:
+	mov ebx, [index]
+	cmp ebx, lenArrayP
+	jge .exitForInit
+	mov al, ' '
+	mov [arrayP+ebx], al
+	inc ebx
+	mov [index], ebx
+	jmp .forInit
+
+	.exitForInit:
 	ret
 
 Error:
