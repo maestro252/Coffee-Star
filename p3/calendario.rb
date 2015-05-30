@@ -262,7 +262,7 @@ def calendario(y)
 
 end
 
-def imprimirFecha(m, d)
+def imprimirFecha(m, d, arr)
   #1 de enero - Año Nuevo
   #Jueves Santo
   #Viernes Santo
@@ -282,19 +282,23 @@ def imprimirFecha(m, d)
   end
 
   if m == 8 and d == 7
-    return "Día de la Batalla de Boyacá"
+    return "Día de la Batalla de Boyacá."
   end
 
   if m == 12 and d == 8
-    return "Día de la Inmaculada Concpeción"
+    return "Día de la Inmaculada Concpeción."
   end
 
   if m == $monthOfEaster and  d == $dayOfEaster - 2
-    return "Viernes Santo"
+    return "Viernes Santo."
   end
 
   if m == $monthOfEaster and d == $dayOfEaster - 3
-    return "Jueves Santo"
+    return "Jueves Santo."
+  end
+
+  if arr[(m - 1)*31 + d] == 0
+    return "Domingo."
   end
 
   # Para los Movibles por la ley Emiliani.
@@ -447,7 +451,7 @@ elsif option == "-d"
     a = calendario y
     a = calcularFestivos a, y
 
-    print "El dia #{d} del mes #{m} del año #{y} es Festivo por: #{imprimirFecha(m,d)}" if (a[(m - 1)*31 + d] == 0 || (a[(m - 1)*31 + d] > 6 && a[(m - 1)*31 + d] != nil))
+    print "El dia #{d} del mes #{m} del año #{y} es Festivo por: #{imprimirFecha(m,d,a)}" if (a[(m - 1)*31 + d] == 0 || (a[(m - 1)*31 + d] > 6 && a[(m - 1)*31 + d] != nil))
     print "El dia #{d} del mes #{m} del año #{y} es Hábil" if !(a[(m - 1)*31 + d] == 0 || (a[(m - 1)*31 + d] > 6 && a[(m - 1)*31 + d] != nil))
   else
     raise "Argumento inválido"
