@@ -56,34 +56,34 @@ def calcularFestivos(y, anio)
   # 11 de noviembre - Independencia de Cartagena.
 
   # #6 de enero
-
   y[((7 - y[6] + 1) % 7) + (6)] += 10
+  $f1 = ((7 - y[6] + 1) % 7) + (6)
 
   # #19 de marzo
 
   y[((7 - y[2*31 + 19] + 1) % 7) + (2*31 + 19)] += 10
-
+  $f2 = ((7 - y[2*31 + 19] + 1) % 7) + (2*31 + 19)
 
   # #29 de Junio
 
   y[((7 - y[5*31 + 29] + 1) % 7) + (5*31 + 29)] += 10
-
+  $f3 = ((7 - y[5*31 + 29] + 1) % 7) + (5*31 + 29)
   # #15 de agosto
 
   y[((7 - y[7*31 + 15] + 1) % 7) + (7*31 + 15)] += 10
-
+  $f4 = ((7 - y[7*31 + 15] + 1) % 7) + (7*31 + 15)
   # #12 de octubre
 
   y[((7 - y[9*31 + 12] + 1) % 7) + (9*31 + 12)] += 10
-
+  $f5 = ((7 - y[9*31 + 12] + 1) % 7) + (9*31 + 12)
   # #1 de noviembre
 
   y[((7 - y[10*31 + 1] + 1) % 7) + (10*31 + 1)] += 10
-
+  $f6 = ((7 - y[10*31 + 1] + 1) % 7) + (10*31 + 1)
   # #11 de noviembre
 
   y[((7 - y[10*31 + 11] + 1) % 7) + (10*31 + 11)] += 10
-
+  $f7 = ((7 - y[10*31 + 11] + 1) % 7) + (10*31 + 11)
   # #Calculo del domingo de pascua
 
   a = anio % 19
@@ -99,26 +99,27 @@ def calcularFestivos(y, anio)
   l = (32 + 2*e + 2*i - h - k) % 7
   m = (a + 11*h + 22* l) / 451
   n = h + l - 7*m + 144
-  monthOfEaster = n / 31
-  dayOfEaster = 1 + (n % 31)
+  $monthOfEaster = n / 31
+  $dayOfEaster = 1 + (n % 31)
 
-  monthOfEaster -= 1
-  dayOfEaster += 1
+  $monthOfEaster -= 1
+  $dayOfEaster += 1
 
-  y[(monthOfEaster - 1)*31 + dayOfEaster - 2] += 10 #viernes santo
-  y[(monthOfEaster - 1)*31 + dayOfEaster - 3] += 10 # jueves santo
+  y[($monthOfEaster - 1)*31 + $dayOfEaster - 2] += 10 #viernes santo
+  y[($monthOfEaster - 1)*31 + $dayOfEaster - 3] += 10 # jueves santo
 
   #dia de la ascencion y[((7 - y[10*31 + 11] + 1) % 7) + (10*31 + 11)] += 10
 
-  y[((7 - y[(monthOfEaster - 1)*31 + dayOfEaster + 42] + 1) % 7) + ((monthOfEaster - 1)*31 + dayOfEaster + 42)] += 10
-
+  y[((7 - y[($monthOfEaster - 1)*31 + $dayOfEaster + 42] + 1) % 7) + (($monthOfEaster - 1)*31 + $dayOfEaster + 42)] += 10
+  $f8 = ((7 - y[($monthOfEaster - 1)*31 + $dayOfEaster + 42] + 1) % 7) + (($monthOfEaster - 1)*31 + $dayOfEaster + 42)
   #corpus Christi
 
-  y[((7 - y[(monthOfEaster - 1)*31 + dayOfEaster + 63] + 1) % 7) + ((monthOfEaster - 1)*31 + dayOfEaster + 63)] += 10
+  y[((7 - y[($monthOfEaster - 1)*31 + $dayOfEaster + 63] + 1) % 7) + (($monthOfEaster - 1)*31 + $dayOfEaster + 63)] += 10
+  $f9 = ((7 - y[($monthOfEaster - 1)*31 + $dayOfEaster + 63] + 1) % 7) + (($monthOfEaster - 1)*31 + $dayOfEaster + 63)
   #sagrado corazon
 
-  y[((7 - y[(monthOfEaster - 1)*31 + dayOfEaster + 70] + 1) % 7) + ((monthOfEaster - 1)*31 + dayOfEaster + 70)] += 10
-
+  y[((7 - y[($monthOfEaster - 1)*31 + $dayOfEaster + 70] + 1) % 7) + (($monthOfEaster - 1)*31 + $dayOfEaster + 70)] += 10
+  $f10 = ((7 - y[($monthOfEaster - 1)*31 + $dayOfEaster + 70] + 1) % 7) + (($monthOfEaster - 1)*31 + $dayOfEaster + 70)
 
 
 
@@ -261,17 +262,196 @@ def calendario(y)
 
 end
 
+def imprimirFecha(m, d)
+  #1 de enero - Año Nuevo
+  #Jueves Santo
+  #Viernes Santo
+  #1 de mayo – Día del Trabajo
+  #20 de julio – Independencia Nacional 7 de agosto – Batalla de Boyacá
+  #8 de diciembre - Inmaculada Concepción 25 de diciembre - Navidad
+  if m == 1 and d == 1
+    return "Año nuevo."
+  end
+
+  if m == 5 and d == 1
+    return "Día del trabajo."
+  end
+
+  if m == 7 and d == 20
+    return "Diá de Independencia Nacional."
+  end
+
+  if m == 8 and d == 7
+    return "Día de la Batalla de Boyacá"
+  end
+
+  if m == 12 and d == 8
+    return "Día de la Inmaculada Concpeción"
+  end
+
+  if m == $monthOfEaster and  d == $dayOfEaster - 2
+    return "Viernes Santo"
+  end
+
+  if m == $monthOfEaster and d == $dayOfEaster - 3
+    return "Jueves Santo"
+  end
+
+  # Para los Movibles por la ley Emiliani.
+
+  # 6 de enero - Epifanía del Señor
+  # 19 de marzo - Día de San José
+  # !!Ascensión del Señor (Sexto domingo después de Pascua)
+  # !!Corpus Christi (Octavo domingo después de Pascua)
+  # !!Sagrado Corazón de Jesús (Noveno domingo después de Pascua)
+  # !!jueves y viernes santo (semana anterior a pascua)
+  # 29 de Junio San Pedro y San Pablo
+  # 15 de agosto - Asunción de la Virgen!
+  # 12 de octubre - Día de la Raza
+  # 1 de noviembre - Todos los Santos
+  # 11 de noviembre - Independencia de Cartagena.
+
+  if ((m - 1)*31 + d) == $f1
+    ret = "Día de la Epifanía del señor (Reyes Magos). "
+    if ((m - 1)*31 + d) != (6)
+      ret += "Trasladado del 6 de enero"
+    end
+    return ret
+  end
+
+  if ((m - 1)*31 + d) == $f2
+    ret = "Día de San José. "
+    if ((m - 1)*31 + d) != (81)
+      ret += "Trasladado del 19 de marzo"
+    end
+    return ret
+  end
+
+  if ((m - 1)*31 + d) == $f3
+    ret = "Día de San Pedro y San Pablo. "
+    if ((m - 1)*31 + d) != (184)
+      ret += "Trasladado del 29 de octubre"
+    end
+    return ret
+  end
+
+  if ((m - 1)*31 + d) == $f4
+    ret = "Día de la Asunción de la Virgen. "
+    if ((m - 1)*31 + d) != (232)
+      ret += "Trasladado del 15 de agosto"
+    end
+    return ret
+  end
+
+  if ((m - 1)*31 + d) == $f5
+    ret = "Día de la Raza. "
+    if ((m - 1)*31 + d) != (291)
+      ret += "Trasladado del 12 de octubre"
+    end
+    return ret
+  end
+
+  if ((m - 1)*31 + d) == $f6
+    ret = "Día de Todos los Santos. "
+    if ((m - 1)*31 + d) != (184)
+      ret += "Trasladado del 1 de Noviembre"
+    end
+    return ret
+  end
+
+  if ((m - 1)*31 + d) == $f7
+    ret = "Día de Independencia de Cartagena. "
+    if ((m - 1)*31 + d) != (184)
+      ret += "Trasladado del 11 de Noviembre"
+    end
+    return ret
+  end
+
+  if ((m - 1)*31 + d) == $f8
+    ret = "Día de La Ascención del Señor. "
+    # if (($monthOfEaster - 1)*31 + $dayOfEaster + 42) != $f8
+    #   ret += "Trasladado del #{($dayOfEaster + 42 + 1) % 31} del mes #{$monthOfEaster + 1}" if (42 - $dayOfEaster) >= 9
+    #   ret += "Trasladado del #{($dayOfEaster + 42 + 1) % 31} del mes #{$monthOfEaster + 2}" if (42 - $dayOfEaster) < 9
+    # end
+    return ret
+  end
+
+  if ((m - 1)*31 + d) == $f9
+    ret = "Corpus Christi. "
+    # if (($monthOfEaster - 1)*31 + $dayOfEaster + 63) != $f8
+    #   ret += "Trasladado del #{$f8 - 63 - (($monthOfEaster - 1)* 31)} del mes #{(($f8 - 63 - $dayOfEaster)/31)+1}"
+    # end
+    return ret
+  end
+
+  if ((m - 1)*31 + d) == $f10
+    ret = "Día del Sagrado Corazón de Jesús. "
+    # if (($monthOfEaster - 1)*31 + $dayOfEaster + 70) != $f8
+    #   ret += "Trasladado del #{$f8 - 70 - (($monthOfEaster - 1)* 31)} del mes #{(($f8 - 70 - $dayOfEaster)/31)+1}"
+    # end
+    return ret
+  end
+
+end
+
 #Main
 
-puts "Ingrese el año a calcular"
+#puts "Ingrese el año a calcular"
+#
+#y = gets.chomp.to_i
+#a = calendario y
+#a = calcularFestivos a, y
+#printCalendar a
+#
+#puts "El 31 de Mayo es #{a[4*31 + 31]}"
+#puts
+#puts a.count
+#p a
+#
 
-y = gets.chomp.to_i
-a = calendario y
-a = calcularFestivos a, y
-printCalendar a
+if ARGV.size == 0
+  option="no"
+elsif ARGV.size == 1
+  #option=ARGV.shift
+  raise "Se esperaban mas argumentos"
+elsif ARGV.size == 2
+  option = ARGV.shift
+  parameter = ARGV.shift
+else
+  raise "Cantidad de argumentos inválida"
+end
 
-puts "El 31 de Mayo es #{a[4*31 + 31]}"
-puts
-puts a.count
-p a
+if option == "no" then
+  a = calendario 2015
+  a = calcularFestivos a, 2015
+  printCalendar a
+elsif option == "-y"
+  parameter = parameter.to_i
+  if parameter > 9999 || parameter < 1583
+    raise "El año ingresado no es válido"
+  else
+    a = calendario parameter
+    a = calcularFestivos a, parameter
+    printCalendar a
+  end
+elsif option == "-d"
+  if parameter.size == 8
+    y = parameter[0..3]
+    m = parameter[4..5]
+    d = parameter[6..7]
 
+    y = y.to_i
+    m = m.to_i
+    d = d.to_i
+
+    a = calendario y
+    a = calcularFestivos a, y
+
+    print "El dia #{d} del mes #{m} del año #{y} es Festivo por: #{imprimirFecha(m,d)}" if (a[(m - 1)*31 + d] == 0 || (a[(m - 1)*31 + d] > 6 && a[(m - 1)*31 + d] != nil))
+    print "El dia #{d} del mes #{m} del año #{y} es Hábil" if !(a[(m - 1)*31 + d] == 0 || (a[(m - 1)*31 + d] > 6 && a[(m - 1)*31 + d] != nil))
+  else
+    raise "Argumento inválido"
+  end
+else
+  raise "Opción no válida"
+end
