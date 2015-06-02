@@ -65,13 +65,10 @@ def calcularFestivos(y, anio)
   $f2 = ((7 - y[2*31 + 19] + 1) % 7) + (2*31 + 19)
 
   # #29 de Junio
-  if y[(5*31) + 29] == 5 || y[(5*31) + 29] == 1
-    y[((7 - y[5*31 + 29] + 1) % 7) + (5*31 + 29)] += 10
-    $f3 = ((7 - y[5*31 + 29] + 1) % 7) + (5*31 + 29)
-  else
-    y[(((7 - y[5*31 + 29] + 1) % 7) + (5*31 + 29)) + 1] += 10
-    $f3 = (((7 - y[5*31 + 29] + 1) % 7) + (5*31 + 29)) + 1
-  end 
+
+  y[(((8 - y[5*31 + 29] + 1) % 8) + (5*31 + 29))] += 10
+  $f3 = (((8 - y[5*31 + 29] + 1) % 8) + (5*31 + 29))
+
   # #15 de agosto
 
   y[((7 - y[7*31 + 15] + 1) % 7) + (7*31 + 15)] += 10
@@ -116,14 +113,24 @@ def calcularFestivos(y, anio)
 
   y[((7 - y[($monthOfEaster - 1)*31 + $dayOfEaster + 42] + 1) % 7) + (($monthOfEaster - 1)*31 + $dayOfEaster + 42)] += 10
   $f8 = ((7 - y[($monthOfEaster - 1)*31 + $dayOfEaster + 42] + 1) % 7) + (($monthOfEaster - 1)*31 + $dayOfEaster + 42)
+
+
   #corpus Christi
 
   y[((7 - y[($monthOfEaster - 1)*31 + $dayOfEaster + 63] + 1) % 7) + (($monthOfEaster - 1)*31 + $dayOfEaster + 63)] += 10
   $f9 = ((7 - y[($monthOfEaster - 1)*31 + $dayOfEaster + 63] + 1) % 7) + (($monthOfEaster - 1)*31 + $dayOfEaster + 63)
   #sagrado corazon
-
-  y[((7 - y[($monthOfEaster - 1)*31 + $dayOfEaster + 70] + 1) % 7) + (($monthOfEaster - 1)*31 + $dayOfEaster + 70)] += 10
-  $f10 = ((7 - y[($monthOfEaster - 1)*31 + $dayOfEaster + 70] + 1) % 7) + (($monthOfEaster - 1)*31 + $dayOfEaster + 70)
+  contNil = 0
+  i = ($monthOfEaster - 1) * 31 + $dayOfEaster
+  while i < ($monthOfEaster - 1) * 31 + $dayOfEaster + 72
+    if y[i] == nil
+      contNil += 1
+    end
+    i += 1
+  end
+  puts contNil
+  y[((7 - y[($monthOfEaster - 1)*31 + $dayOfEaster + 70 + contNil] + 1) % 7) + (($monthOfEaster - 1)*31 + $dayOfEaster + 70) + contNil] += 10
+  $f10 = ((7 - y[($monthOfEaster - 1)*31 + $dayOfEaster + 70 + contNil] + 1) % 7) + (($monthOfEaster - 1)*31 + $dayOfEaster + 70 + contNil)
 
 
 
