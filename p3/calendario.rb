@@ -65,9 +65,13 @@ def calcularFestivos(y, anio)
   $f2 = ((7 - y[2*31 + 19] + 1) % 7) + (2*31 + 19)
 
   # #29 de Junio
-
-  y[((7 - y[5*31 + 29] + 1) % 7) + (5*31 + 29)] += 10
-  $f3 = ((7 - y[5*31 + 29] + 1) % 7) + (5*31 + 29)
+  if y[(5*31) + 29] == 5 || y[(5*31) + 29] == 1
+    y[((7 - y[5*31 + 29] + 1) % 7) + (5*31 + 29)] += 10
+    $f3 = ((7 - y[5*31 + 29] + 1) % 7) + (5*31 + 29)
+  else
+    y[(((7 - y[5*31 + 29] + 1) % 7) + (5*31 + 29)) + 1] += 10
+    $f3 = (((7 - y[5*31 + 29] + 1) % 7) + (5*31 + 29)) + 1
+  end 
   # #15 de agosto
 
   y[((7 - y[7*31 + 15] + 1) % 7) + (7*31 + 15)] += 10
@@ -334,7 +338,7 @@ def imprimirFecha(m, d, arr)
   if ((m - 1)*31 + d) == $f3
     ret = "Día de San Pedro y San Pablo. "
     if ((m - 1)*31 + d) != (184)
-      ret += "Trasladado del 29 de octubre"
+      ret += "Trasladado del 29 de Junio"
     end
     return ret
   end
