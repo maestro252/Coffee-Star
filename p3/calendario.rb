@@ -442,7 +442,7 @@ if option == "no" then
   printCalendar a
 elsif option == "-y"
   parameter = parameter.to_i
-  if parameter > 9999 || parameter < 1583
+  if parameter > 9999 #|| parameter < 1583
     raise "El año ingresado no es válido"
   else
     a = calendario parameter
