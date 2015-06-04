@@ -28,6 +28,9 @@ lenError6: equ $-errorMessage6
 errorMessage7: db "Usted se encuentra fuera de Colombia", 0xa
 lenError7: equ $-errorMessage7
 
+errorMessage8: db "El año debe ser igual o superior a 1583", 0xa
+lenError8: equ $-errorMessage8
+
 array: times 373 db 20
 lenArray: equ $-array
 arrayD: times 3 db 0
@@ -1427,6 +1430,11 @@ write_string errorMessage6, lenError6
 ;The date is invalid so exit the program
 jmp Error
 
+errorInvalidYear:
+write_string errorMessage8, lenError8
+;The year is invalid so exit the program
+jmp Error
+
 strcmp:		; Function to compare two strings
 					; Parameters: In eax the address of source string
 					; In ebx the address of string to compare
@@ -1468,6 +1476,8 @@ dow:		; Function to calculate the first day of a year
 				; Parameters: In eax the year, in ebx the month and in ecx the day
 				; Return in eax the day of the week of the first day of the year
 mov [y], eax
+cmp eax, 1583
+jb errorInvalidYear
 mov [m], ebx
 mov [d], ecx
 mov eax, [m]
